@@ -1,7 +1,6 @@
 from main_project.utils import configure
 from main_project.form_recog import analyze_document, \
-                                    display_basic_info, \
-                                    display_item_description
+                                    ParseResult
 
 def analyze_doc():
     url_pdf = "https://raw.githubusercontent.com/Azure-Samples/cognitive-services-REST-api-samples/master/curl/form-recognizer/sample-invoice.pdf"
@@ -14,9 +13,10 @@ def analyze_doc():
         )
     return document_result
 
+parse_result = ParseResult(analyze_doc())
 def test_basic_info():
-    document_result = analyze_doc()
-    basic_information = display_basic_info(document_result)
+    
+    basic_information = parse_result.display_basic_info()
     
     assert len(basic_information["Attribute"]) == \
                 len(basic_information["Value"]) == \
@@ -24,7 +24,7 @@ def test_basic_info():
 
 def test_desc_info():
     document_result = analyze_doc()
-    desc_information = display_item_description(document_result)
+    desc_information = parse_result.display_item_description()
     
     assert len(desc_information["Attribute"]) == \
                 len(desc_information["Value"]) == \

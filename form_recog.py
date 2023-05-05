@@ -16,18 +16,20 @@ def format_bounding_region(bounding_region):
                     )for region in bounding_region
                     )
 
-def analyze_document(docURL:str=False, docPath:str=False, prebuilt_model:str="prebuilt-document"):
+def analyze_document(doc_is_url=False,
+                    docURL:str=False, 
+                    docPath:str=False, 
+                    prebuilt_model:str="prebuilt-document"):
 
     doc_analysis_client = DocumentAnalysisClient(endpoint="https://formrecognizerinvoiceparser.cognitiveservices.azure.com/",
                                                 credential=AzureKeyCredential(os.getenv("key")))
     # IF DOCS IN URL 
-    # poller = doc_analysis_client.begin_analyze_document_from_url(
-    #     prebuilt_model, docURL
-    # )
+    if doc_is_url:
+        poller = doc_analysis_client.begin_analyze_document_from_url(
+            prebuilt_model, docURL)
+    else:
+        poller = doc_analysis_client.begin_analyze_document(
+            prebuilt_model, docPath)
 
-    # LOCAL PDF
-    poller = doc_analysis_client.begin_analyze_document(
-        prebuilt_model, docPath
-    )
     result = poller.result()
     return result

@@ -1,7 +1,5 @@
 from form_recog import analyze_document, \
-                        key_val_extraction, \
-                        display_basic_info, \
-                        display_item_description
+                        ParseResult
 from utils import configure
 from pathlib import Path
 
@@ -24,8 +22,9 @@ def main():
     # parsed_Dict = key_val_extraction(document_result)
     # print(parsed_Dict)
 
-    basic_information = display_basic_info(document_result)
-    desc_information = display_item_description(document_result)
+    parse_result = ParseResult(document_result)
+    basic_information = parse_result.display_basic_info()
+    desc_information = parse_result.display_item_description()
     print("BASIC INFORMATION: \n", basic_information)
     print("DESCRIPTION: \n", desc_information)
 

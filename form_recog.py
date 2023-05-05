@@ -166,3 +166,51 @@ def display_basic_info(invoice_result:azure.ai.formrecognizer._models.AnalyzeRes
                 infoDict["Conf"].append(conf)
 
         return infoDict
+
+def get_item_info(item, itemToget:str):
+    itemInfo = item.value.get(itemToget)
+    if itemInfo:
+        #print(f"{itemToget}: {itemInfo.value} | {itemToget} confidence: {itemInfo.confidence}")
+        return (str(itemInfo.value), str(itemInfo.confidence))
+    
+def display_item_description(invoice_result:azure.ai.formrecognizer._models.AnalyzeResult):
+    
+    infoDict = {"Attribute":[], "Value":[], "Conf":[]}   
+    for idx_1, invoice in enumerate(invoice_result.documents):
+        print(f"----- Invoice # {idx_1+1}")
+        for idx_2, item in enumerate(invoice.fields.get("Items").value):
+            print(f"----- Table {idx_2+1} Invoice # {idx_1+1}")
+            item_description = [
+                "Description", 
+                "Quantity", 
+                "Unit", 
+                "UnitPrice", 
+                "ProductCode"
+                "Date", 
+                "Tax", 
+                "Amount", 
+                "SubTotal", 
+                "TotalTax", 
+                "PreviousUnpaidBalance", 
+                "AmountDue", 
+                "ServiceStartDate",
+                "ServiceEndDate", 
+                "ServiceAddress", 
+                "ServiceAddressRecipient", 
+                "RemittanceAddressRecipient", 
+                ]
+            for description in item_description:
+                info = get_item_info(item=item, itemToget=description)
+                if info == None:
+                    infoDict["Attribute"].append(np.NAN)
+                    infoDict["Value"].append(np.NAN)
+                    infoDict["Conf"].append(np.NAN)
+                    pass
+                else:
+                    val = get_item_info(item=item, itemToget=description)[0]
+                    conf = get_item_info(item=item, itemToget=description)[1]
+                    infoDict["Attribute"].append(description)
+                    infoDict["Value"].append(val)
+                    infoDict["Conf"].append(conf)
+
+    return infoDict

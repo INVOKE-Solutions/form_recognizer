@@ -11,6 +11,7 @@
 ```
 $ python3 main.py
 ```
+4. Output should return a `Dict[List]` that contains the contents of the document.
 
 # Unit-testing
 1. To run unit test, make sure you are on `form_recognizer` dir. 
@@ -18,6 +19,15 @@ $ python3 main.py
 ```
 $ python -m pytest unit_test/test_fr.py
 ```
+4. Testing should be succeed.
 
-# Next Development
+# Development
+
+## Next sprint
 * Building CLI 
+
+## Source 
+* [concept-model-overview](https://learn.microsoft.com/en-us/azure/applied-ai-services/form-recognizer/concept-model-overview?view=form-recog-3.0.0)
+* [/use-sdk-rest-api](https://learn.microsoft.com/en-us/azure/applied-ai-services/form-recognizer/how-to-guides/use-sdk-rest-api?view=form-recog-3.0.0&pivots=programming-language-python&tabs=linux)
+* [concept-invoice](https://learn.microsoft.com/en-us/azure/applied-ai-services/form-recognizer/concept-invoice?view=form-recog-3.0.0)
+* [azure.ai.formrecognizer.documentanalysisclient](https://learn.microsoft.com/en-us/python/api/azure-ai-formrecognizer/azure.ai.formrecognizer.documentanalysisclient?view=azure-python)

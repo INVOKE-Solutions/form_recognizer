@@ -18,3 +18,6 @@ $ python3 main.py
 ```
 $ python -m pytest unit_test/test_fr.py
 ```
+
+# Next Development
+* Building CLI 

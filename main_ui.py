@@ -34,6 +34,8 @@ def main_streamlit():
                     with tab2:
                         display_df(parseInfo[0])
                         display_df(parseInfo[1])
+                        
+                st.success("Parsing complete. Click Data Parsed tab.")
     else:
         st.warning("No PDF uploaded.")
 

@@ -8,14 +8,18 @@ from pathlib import Path
 
 local_pdf_path = Path('/home/ammar/INVOKE/invoice_parser/venvParser/project/pdf_test')
 url_pdf = "https://raw.githubusercontent.com/Azure-Samples/cognitive-services-REST-api-samples/master/curl/form-recognizer/sample-invoice.pdf"
-def main():
+def recognize_this(
+        doc_is_url:bool,
+        doc_url=False,
+        doc_path=False,
+    ):
     configure()
     print("Recognition started...")
     document_result = analyze_document(
-        doc_is_url=True, 
-        docURL=url_pdf, 
+        doc_is_url=doc_is_url, 
+        docURL=doc_url, 
         prebuilt_model="prebuilt-invoice", 
-        # docPath=local_pdf_path/"test_pdf_1.pdf"
+        docPath=doc_path,
         )
     print("Recognition completed.")
     print("Parsing and return json format...")

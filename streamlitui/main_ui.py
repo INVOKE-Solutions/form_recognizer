@@ -1,7 +1,11 @@
 import streamlit as st
 from fr_ui import sidebar, parse_button, display_df
 from utils import displaypdf, display_pdf_to_image
-from form_recognizer.main_project import main
+
+import os
+os.sys.append("./form_recognizer/main_project")
+from main_project.main import main
+
 
 def main_streamlit():
     # SETUP SIDEBAR & UPLOAD PART

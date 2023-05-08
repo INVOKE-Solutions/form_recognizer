@@ -1,4 +1,4 @@
-from fr_ui import sidebar, parse_button
+from streamlitui.fr_ui import sidebar, parse_button
 
 from utils import displaypdf
 import streamlit as st

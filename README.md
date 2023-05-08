@@ -1,5 +1,5 @@
 # Description
-* Project name: Invoice Parser using built-in model from Azure Form Recofgnizer
+* Project name: Invoice Parser using built-in model from Azure Form Recognizer
 * Objective: To automate the filling process of Finance Department in terms of parsing the information from documents (invoice) 
 * Document format: PDF
 * Service provider: Azure Form Recognizer

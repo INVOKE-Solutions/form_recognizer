@@ -1,6 +1,6 @@
 import os
 import numpy as np
-import pandas as pd
+import streamlit as st
 from typing import Dict
 
 import azure
@@ -39,10 +39,13 @@ def analyze_document(doc_is_url=False,
         prebuilt_model: Pre-built model from Form Recognizer (default is prebuild-document; 
                         alternative; invoice-document)
     """
+    # STREAMLIT SECRET 
+    endpoint = st.secrets["ENDPOINT"]
+    key = st.secrets["KEY"]
 
     doc_analysis_client = DocumentAnalysisClient(
-                            endpoint=os.getenv("endpoint"),
-                            credential=AzureKeyCredential(os.getenv("key")))
+                            endpoint=endpoint,
+                            credential=AzureKeyCredential(key))
     # DOCS IN URL 
     if doc_is_url:
         poller = doc_analysis_client.begin_analyze_document_from_url(

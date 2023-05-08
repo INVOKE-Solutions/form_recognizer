@@ -14,4 +14,4 @@ def displaypdf(file: st.runtime.uploaded_file_manager.UploadedFile):
 def display_pdf_to_image(file:st.runtime.uploaded_file_manager.UploadedFile):
     bytes_pdf = base64.b64encode(file.read()).decode("utf-8")
     image = convert_from_bytes(bytes_pdf, 500)
-    return st.image(image)
+    st.image(image)

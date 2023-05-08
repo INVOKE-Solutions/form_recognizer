@@ -163,4 +163,5 @@ cython_debug/
 pdf_test/
 
 # Streamlit 
+.streamlit
 *.toml

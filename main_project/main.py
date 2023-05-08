@@ -12,8 +12,8 @@ def main():
     configure()
     print("Recognition started...")
     document_result = analyze_document(
-        doc_is_url=False, 
-        # docURL=url_pdf, 
+        doc_is_url=True, 
+        docURL=url_pdf, 
         prebuilt_model="prebuilt-invoice", 
         docPath=local_pdf_path/"test_pdf_1.pdf"
         )

@@ -3,8 +3,8 @@ from streamlitui.fr_ui import sidebar, parse_button, display_df
 from streamlitui.utils import displaypdf, display_pdf_to_image
 
 import os, sys
-sys.path.append(os.path.join(os.path.dirname(sys.path[0]), "main_project"))
-from main_project.utils import configure
+# sys.path.append(os.path.join(os.path.dirname(sys.path[0]), "main_project"))
+from main_project.main import main
 
 
 def main_streamlit():

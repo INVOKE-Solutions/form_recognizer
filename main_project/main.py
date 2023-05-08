@@ -1,8 +1,8 @@
-from form_recog import analyze_document, \
+from main_project.form_recog import analyze_document, \
                         key_val_extraction, \
                         display_basic_info, \
                         display_item_description
-from utils import configure
+from main_project.utils import configure
 from pathlib import Path
 
 

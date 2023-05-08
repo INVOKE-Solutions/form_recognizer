@@ -33,5 +33,5 @@ def main():
     # return basic_information
 
 
-if __name__ == "__main__":
-    main()
+# if __name__ == "__main__":
+#     main() 

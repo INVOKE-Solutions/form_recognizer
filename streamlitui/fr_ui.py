@@ -1,4 +1,6 @@
 import streamlit as st
+import pandas as pd
+from typing import Dict
 # SIDEBAR
 def sidebar():
     sidebar = st.sidebar
@@ -23,5 +25,8 @@ def parse_button():
         )
     return parse_button
 
-
+def display_df(data:Dict):
+    df = pd.DataFrame(data)
+    df = df.loc[df["Conf"].notna()]
+    return st.dataframe(df)
 

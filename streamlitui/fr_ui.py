@@ -3,7 +3,6 @@ import time
 
 
 # SIDEBAR
-
 def sidebar():
     sidebar = st.sidebar
     sidebar.write("Invoice Parser")
@@ -16,9 +15,16 @@ def sidebar():
     if uploaded_pdf:
         progress_bar = sidebar.progress(len(uploaded_pdf) + (100-len(uploaded_pdf)))
         sidebar.success("File successfully uploaded.")
+    
+    return uploaded_pdf
+    
+def parse_button():
+    parse_button = st.button(
+        label="Parse Document",
+        key="parse_button", 
+        help="Click to parse the document"
+        )
+    return parse_button
 
 
-
-if __name__ == "__main__":
-    sidebar()
 

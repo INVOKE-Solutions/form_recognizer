@@ -4,7 +4,7 @@ from streamlitui.utils import displaypdf, display_pdf_to_image
 
 import os, sys
 from io import StringIO
-# sys.path.append(os.path.join(os.path.dirname(sys.path[0]), "main_project"))
+sys.path.append(os.path.join(os.path.dirname(sys.path[0]), "main_project"))
 from main_project.main import recognize_this
 
 

@@ -51,10 +51,9 @@ def analyze_document(doc_is_url=False,
         poller = doc_analysis_client.begin_analyze_document_from_url(
             prebuilt_model, docURL)
     else:
-        with open(docPath, "rb") as f:
-            poller = doc_analysis_client.begin_analyze_document(
-                prebuilt_model, 
-                document=f)
+        poller = doc_analysis_client.begin_analyze_document(
+            prebuilt_model, 
+            document=docPath)
 
     result = poller.result()
     return result
@@ -125,7 +124,7 @@ def get_basic_info(invoice:azure.ai.formrecognizer._models.AnalyzedDocument,
             # print(f"{infoToget}: {getInfo.value} | {infoToget} confidence: {getInfo.confidence}")
             return (str(getInfo.value), str(getInfo.confidence))
 
-def display_basic_info(invoice_result:azure.ai.formrecognizer._models.AnalyzeResult):
+def display_basic_info(invoice_result:azure.ai.formrecognizer._models.AnalyzeResult)->Dict:
 
     """
     Return dictionary that has key-value of attribute-value from the docs 
@@ -176,7 +175,7 @@ def get_item_info(item, itemToget:str):
         #print(f"{itemToget}: {itemInfo.value} | {itemToget} confidence: {itemInfo.confidence}")
         return (str(itemInfo.value), str(itemInfo.confidence))
     
-def display_item_description(invoice_result:azure.ai.formrecognizer._models.AnalyzeResult):
+def display_item_description(invoice_result:azure.ai.formrecognizer._models.AnalyzeResult)->Dict:
     
     infoDict = {"Attribute":[], "Value":[], "Conf":[]}   
     for idx_1, invoice in enumerate(invoice_result.documents):

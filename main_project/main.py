@@ -15,7 +15,7 @@ def main():
         doc_is_url=True, 
         docURL=url_pdf, 
         prebuilt_model="prebuilt-invoice", 
-        docPath=local_pdf_path/"test_pdf_1.pdf"
+        # docPath=local_pdf_path/"test_pdf_1.pdf"
         )
     print("Recognition completed.")
     print("Parsing and return json format...")

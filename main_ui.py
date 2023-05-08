@@ -18,7 +18,6 @@ def main_streamlit():
         parseButton = parse_button()
         for idx, doc in enumerate(uploaded_pdf):
             # displaypdf(file=doc)
-            st.write(f"PDF name: {doc.name}")
             with tab1:
                 with st.expander("See PDF"):
                     display_pdf_to_image(file=doc)

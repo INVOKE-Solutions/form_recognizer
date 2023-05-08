@@ -1,7 +1,4 @@
 import streamlit as st
-import time
-
-
 # SIDEBAR
 def sidebar():
     sidebar = st.sidebar

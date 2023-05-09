@@ -1,12 +1,13 @@
 import streamlit as st
 from streamlitui.fr_ui import sidebar, parse_button, display_df
-from streamlitui.utils import displaypdf, display_pdf_to_image
+from streamlitui.utils import displaypdf, display_pdf_to_image, save_file
 
 import os, sys
 from io import StringIO
 sys.path.append(os.path.join(os.path.dirname(sys.path[0]), "main_project"))
 from main_project.main import recognize_this
 
+from pdf2image import convert_from_path
 
 def main_streamlit():
     # SETUP SIDEBAR & UPLOAD PART
@@ -21,7 +22,14 @@ def main_streamlit():
             # displaypdf(file=doc)
             with tab1:
                 with st.expander("See PDF"):
-                    display_pdf_to_image(file=doc)
+                    save_file(
+                        path="data",
+                        file=doc.read(),
+                        filename=doc.name
+                    )
+                    images = convert_from_path(f"data/{doc.name}")
+                    for page in images:
+                        st.image(page, use_column_width=True)
 
             # PARSING PROCESS
             if parseButton:

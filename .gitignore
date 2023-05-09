@@ -165,3 +165,4 @@ pdf_test/
 # Streamlit 
 .streamlit
 *.toml
+data

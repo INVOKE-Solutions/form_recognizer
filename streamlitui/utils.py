@@ -1,6 +1,8 @@
 import streamlit as st
 import base64
 from pdf2image import convert_from_bytes
+from os import makedirs
+from os.path import exists
 
 def displaypdf(file: st.runtime.uploaded_file_manager.UploadedFile):
     """
@@ -15,3 +17,10 @@ def display_pdf_to_image(file:st.runtime.uploaded_file_manager.UploadedFile):
     bytes_pdf = file.read()
     image = convert_from_bytes(bytes_pdf, 500)
     st.image(image)
+
+def save_file(path:str, file:st.runtime.uploaded_file_manager.UploadedFile, filename:str):
+    if not exists(path):
+        makedirs(path)
+
+    with open(rf"{path}\{filename}", "wb") as save_file:
+        save_file.write(file)

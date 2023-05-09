@@ -5,14 +5,17 @@ from main_project.form_recog import analyze_document, \
 from main_project.utils import configure
 from pathlib import Path
 
-
-local_pdf_path = Path('/home/ammar/INVOKE/invoice_parser/venvParser/project/pdf_test')
-url_pdf = "https://raw.githubusercontent.com/Azure-Samples/cognitive-services-REST-api-samples/master/curl/form-recognizer/sample-invoice.pdf"
-def recognize_this(
-        doc_is_url:bool,
-        doc_url=False,
-        doc_path=False,
-    ):
+def recognize_this( doc_is_url:bool,
+                    doc_url=False,
+                    doc_path=False,
+                    ):
+    """
+    Return Tuple[Dict[str, str]] or Dict[str, int]
+    Args*:
+        doc_is_url=False :True if URL link, False if from path
+        doc_url=False (default): Document URL string
+        doc_path=False (default): Document path
+    """
     configure()
     print("Recognition started...")
     document_result = analyze_document(
@@ -34,8 +37,6 @@ def recognize_this(
     print("DESCRIPTION: \n", desc_information)
 
     return (basic_information, desc_information)
-    # return basic_information
-
 
 # if __name__ == "__main__":
 #     main() 

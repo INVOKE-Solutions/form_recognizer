@@ -16,6 +16,8 @@ def main_streamlit():
     # SETUP TAB
     tab1, tab2 = st.tabs(["PDF Uploaded", "Data Parsed"])
     # UPLOAD PROCESS
+    text_dirs = st.empty()
+    text_dirs.text("\n".join(os.listdir('.')))
     if uploaded_pdf:
         parseButton = parse_button()
         for idx, doc in enumerate(uploaded_pdf):
@@ -30,6 +32,8 @@ def main_streamlit():
                     images = convert_from_path(f"data/{doc.name}")
                     for page in images:
                         st.image(page, use_column_width=True)
+                    # display_pdf_to_image(file=doc)                    
+            text_dirs.text("\n".join(os.listdir('.')))
 
             # PARSING PROCESS
             if parseButton:

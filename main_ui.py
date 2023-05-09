@@ -1,9 +1,8 @@
 import streamlit as st
 from streamlitui.fr_ui import sidebar, parse_button, display_df
-from streamlitui.utils import displaypdf, display_pdf_to_image, save_file
+from streamlitui.utils import display_image_cached
 
 import os, sys
-from io import StringIO
 sys.path.append(os.path.join(os.path.dirname(sys.path[0]), "main_project"))
 from main_project.main import recognize_this
 
@@ -16,25 +15,23 @@ def main_streamlit():
     # SETUP TAB
     tab1, tab2 = st.tabs(["PDF Uploaded", "Data Parsed"])
     # UPLOAD PROCESS
-    text_dirs = st.empty()
-    text_dirs.text("\n".join(os.listdir('.')))
+    # text_dirs = st.empty()
+    # text_dirs.text("\n".join(os.listdir('.')))
     if uploaded_pdf:
         parseButton = parse_button()
         for idx, doc in enumerate(uploaded_pdf):
-            # displaypdf(file=doc)
             with tab1:
                 with st.expander("See PDF"):
-                    save_file(
-                        path="data",
-                        file=doc.read(),
-                        filename=doc.name
-                    )
-                    images = convert_from_path(f"data/{doc.name}")
+                    # save_file(
+                    #     path="data",
+                    #     file=doc.read(),
+                    #     filename=doc.name
+                    # )
+                    images = display_image_cached(doc)
                     for page in images:
                         st.image(page, use_column_width=True)
-                    # display_pdf_to_image(file=doc)                    
-            text_dirs.text("\n".join(os.listdir('.')))
-            text_dirs.text("\n".join(os.listdir('./data')))
+            # text_dirs.text("\n".join(os.listdir('.')))
+            # text_dirs.text("\n".join(os.listdir('./data')))
 
             # PARSING PROCESS
             if parseButton:

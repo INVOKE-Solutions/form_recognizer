@@ -18,6 +18,11 @@ def display_pdf_to_image(file:st.runtime.uploaded_file_manager.UploadedFile):
     image = convert_from_bytes(bytes_pdf, 500)
     st.image(image)
 
+@st.cache_data
+def display_image_cached(file:st.runtime.uploaded_file_manager.UploadedFile):
+    images = convert_from_bytes(file.read())
+    return images
+
 def save_file(path:str, file:st.runtime.uploaded_file_manager.UploadedFile, filename:str):
     if not exists(path):
         makedirs(path)

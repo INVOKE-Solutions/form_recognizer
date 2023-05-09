@@ -4,6 +4,7 @@ from main_project.form_recog import analyze_document, \
                         display_item_description
 from main_project.utils import configure
 
+@st.cache_data(ttl=60*60)
 def recognize_this( doc_is_url:bool,
                     doc_url=False,
                     doc_path=False,

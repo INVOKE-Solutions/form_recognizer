@@ -18,7 +18,7 @@ def display_pdf_to_image(file:st.runtime.uploaded_file_manager.UploadedFile):
     image = convert_from_bytes(bytes_pdf, 500)
     st.image(image)
 
-@st.cache_data
+@st.cache_data(ttl=60*60)
 def display_image_cached(file:st.runtime.uploaded_file_manager.UploadedFile):
     images = convert_from_bytes(file.read())
     return images

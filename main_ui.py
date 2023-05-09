@@ -34,6 +34,7 @@ def main_streamlit():
                         st.image(page, use_column_width=True)
                     # display_pdf_to_image(file=doc)                    
             text_dirs.text("\n".join(os.listdir('.')))
+            text_dirs.text("\n".join(os.listdir('./data')))
 
             # PARSING PROCESS
             if parseButton:

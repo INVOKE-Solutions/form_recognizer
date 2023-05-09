@@ -22,5 +22,5 @@ def save_file(path:str, file:st.runtime.uploaded_file_manager.UploadedFile, file
     if not exists(path):
         makedirs(path)
 
-    with open(rf"{path}\{filename}", "wb") as save_file:
+    with open(rf"{path}/{filename}", "wb") as save_file:
         save_file.write(file)

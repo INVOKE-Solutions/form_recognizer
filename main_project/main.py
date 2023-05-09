@@ -1,3 +1,5 @@
+import streamlit as st
+
 from main_project.form_recog import analyze_document, \
                         key_val_extraction, \
                         display_basic_info, \

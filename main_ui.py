@@ -13,20 +13,15 @@ def main_streamlit():
     uploaded_pdf = sidebar()
 
     # SETUP TAB
-    tab1, tab2 = st.tabs(["PDF Uploaded", "Data Parsed"])
+    col1, col2 = st.columns(2) #["PDF Uploaded", "Data Parsed"])
     # UPLOAD PROCESS
     # text_dirs = st.empty()
     # text_dirs.text("\n".join(os.listdir('.')))
     if uploaded_pdf:
         parseButton = parse_button()
         for idx, doc in enumerate(uploaded_pdf):
-            with tab1:
+            with col1:
                 with st.expander("See PDF"):
-                    # save_file(
-                    #     path="data",
-                    #     file=doc.read(),
-                    #     filename=doc.name
-                    # )
                     images = display_image_cached(doc)
                     for page in images:
                         st.image(page, use_column_width=True)
@@ -40,15 +35,23 @@ def main_streamlit():
                         doc_is_url=False, 
                         doc_path=doc.getvalue()
                     )
-                        
-                    with tab2:
-                        try:
-                            display_df(parseInfo[0])
-                            display_df(parseInfo[1])
-                        except:
-                            st.error("No invoice information detected in your documents.")
-                            st.warning("Your document might not an invoice document.")
-                        
+                    st.session_state["parseInfo"] = parseInfo
+                        # st.experimental_data_editor(display_df(parseInfo[0]), use_container_width=True)
+                        # st.experimental_data_editor(display_df(parseInfo[1]), use_container_width=True)
+                        # except:
+                            # st.error("No invoice information detected in your documents.")
+                            # st.warning("Your document might not an invoice document.")
+
+            with col2:
+                parseInfo = st.session_state.get("parseInfo", False)
+                if parseInfo:
+                    for idx, df in enumerate(parseInfo):
+                        st.experimental_data_editor(
+                            display_df(df),
+                            key=f"editable_df{idx}",
+                            use_container_width=True
+                        )
+
                 st.success("Parsing complete. Click Data Parsed tab.")
     else:
         st.warning("No PDF uploaded.")

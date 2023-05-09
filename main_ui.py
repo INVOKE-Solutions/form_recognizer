@@ -32,8 +32,12 @@ def main_streamlit():
                     )
                         
                     with tab2:
-                        display_df(parseInfo[0])
-                        display_df(parseInfo[1])
+                        try:
+                            display_df(parseInfo[0])
+                            display_df(parseInfo[1])
+                        except:
+                            st.error("No invoice information detected in your documents.")
+                            st.warning("Your document might not an invoice document.")
                         
                 st.success("Parsing complete. Click Data Parsed tab.")
     else:

@@ -3,7 +3,6 @@ from main_project.form_recog import analyze_document, \
                         display_basic_info, \
                         display_item_description
 from main_project.utils import configure
-from pathlib import Path
 
 def recognize_this( doc_is_url:bool,
                     doc_url=False,
@@ -31,12 +30,16 @@ def recognize_this( doc_is_url:bool,
     # parsed_Dict = key_val_extraction(document_result)
     # print(parsed_Dict)
 
-    basic_information = display_basic_info(document_result)
-    desc_information = display_item_description(document_result)
-    print("BASIC INFORMATION: \n", basic_information)
-    print("DESCRIPTION: \n", desc_information)
+    try:
+        basic_information = display_basic_info(document_result)
+        desc_information = display_item_description(document_result)
+        print("BASIC INFORMATION: \n", basic_information)
+        print("DESCRIPTION: \n", desc_information)
+        return (basic_information, desc_information)
+    except Exception as e1:
+        print("ERROR recognize_this():\n", e1)
+        print("No information detected")        
 
-    return (basic_information, desc_information)
 
 # if __name__ == "__main__":
 #     main() 

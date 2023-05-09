@@ -161,3 +161,7 @@ cython_debug/
 
 # PDF test directory
 pdf_test/
+
+# STREAMLIT
+.streamlit/
+*.toml

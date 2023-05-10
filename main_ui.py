@@ -9,7 +9,7 @@ from main_project.main import recognize_this
 from pdf2image import convert_from_path
 
 def main_streamlit():
-    # st.set_page_config(layout="wide")
+    st.set_page_config(layout="wide")
     # SETUP SIDEBAR & UPLOAD PART
     uploaded_pdf = sidebar()
 

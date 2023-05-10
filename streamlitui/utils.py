@@ -22,10 +22,3 @@ def display_pdf_to_image(file:st.runtime.uploaded_file_manager.UploadedFile):
 def display_image_cached(file:st.runtime.uploaded_file_manager.UploadedFile):
     images = convert_from_bytes(file.read())
     return images
-
-def save_file(path:str, file:st.runtime.uploaded_file_manager.UploadedFile, filename:str):
-    if not exists(path):
-        makedirs(path)
-
-    with open(rf"{path}/{filename}", "wb") as save_file:
-        save_file.write(file)

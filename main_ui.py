@@ -19,7 +19,7 @@ def main_streamlit():
         parseButton = parse_button()
         for idx, doc in enumerate(uploaded_pdf):
             with col1:
-                with st.expander("See PDF"):
+                with st.expander(f"See PDF"):
                     images = display_image_cached(doc)
                     for page in images:
                         st.image(page, use_column_width=True)
@@ -32,22 +32,24 @@ def main_streamlit():
                             doc_is_url=False, 
                             doc_path=doc.getvalue()
                         )
-                        st.session_state["parseInfo"] = parseInfo
+                        st.session_state[f"parseInfo{idx}"] = parseInfo
                     except:
                         st.error("No invoice information detected in your documents.")
                         st.warning("Your document might not an invoice document.")
+                st.success("Parsing complete. Click Data Parsed tab.")
 
             with col2:
-                parseInfo = st.session_state.get("parseInfo", False)
-                if parseInfo:
-                    for idx, df in enumerate(parseInfo):
-                        st.experimental_data_editor(
-                            display_df(df),
-                            key=f"editable_df{idx}",
-                            use_container_width=True
-                        )
+                with st.expander(f"See Data"):
+                    parseInfo = st.session_state.get(f"parseInfo{idx}", False)
+                    if parseInfo:
+                        st.write(f"PDF {idx+1}")
+                        for ix, df in enumerate(parseInfo):
+                            st.experimental_data_editor(
+                                display_df(df),
+                                key=f"editable_df{ix}_{idx}",
+                                use_container_width=True
+                            )
 
-                st.success("Parsing complete. Click Data Parsed tab.")
     else:
         st.warning("No PDF uploaded.")
 

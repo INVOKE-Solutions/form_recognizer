@@ -12,6 +12,7 @@ def main_streamlit():
     # Force UI to use widemode
     st.set_page_config(layout="wide")
 
+
     # SETUP SIDEBAR & UPLOAD PART
     uploaded_pdf = sidebar()
 

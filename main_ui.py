@@ -9,7 +9,7 @@ from main_project.main import recognize_this
 from pdf2image import convert_from_path
 
 def main_streamlit():
-    # Force Streamlit UI to use widemode
+    # Force UI to use widemode
     st.set_page_config(layout="wide")
 
     # SETUP SIDEBAR & UPLOAD PART

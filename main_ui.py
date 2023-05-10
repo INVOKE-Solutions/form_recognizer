@@ -48,15 +48,13 @@ def main_streamlit():
                     if parseInfo:
                         for ix, data in enumerate(parseInfo):
                             df = display_df(data)
-                            if ix == 0:
-                                df = df.set_index("Attribute")
-                                df = df.T
                             data_table = st.experimental_data_editor(
                                 df,
                                 key=f"editable_df{ix}_pdf{idx}",
                                 num_rows="dynamic",
                                 use_container_width=True
                             )
+            st.write([k for k in st.session_state.keys() if k.startswith("editable_df")])
     else:
         st.warning("No PDF uploaded.")
 

@@ -28,5 +28,6 @@ def parse_button():
 def display_df(data:Dict):
     df = pd.DataFrame(data)
     df = df.loc[df["Conf"].notna()]
+    df = df.reset_index(drop=True)
     return df
 

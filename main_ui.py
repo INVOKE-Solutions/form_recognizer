@@ -38,7 +38,7 @@ def main_streamlit():
                         )
                         st.session_state[f"parseInfo{idx}"] = parseInfo
                     except:
-                        status.error("No invoice information detected in your documents.")
+                        st.error("No invoice information detected in your documents.")
                         st.warning("Your document might not an invoice document.")
                 status_message.success("Parsing complete. Click Data Parsed tab.")
 
@@ -54,7 +54,6 @@ def main_streamlit():
                                 num_rows="dynamic",
                                 use_container_width=True
                             )
-            st.write([k for k in st.session_state.keys() if k.startswith("editable_df")])
     else:
         st.warning("No PDF uploaded.")
 

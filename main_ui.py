@@ -16,10 +16,11 @@ def main_streamlit():
     col1, col2 = st.columns(2) #["PDF Uploaded", "Data Parsed"])
     # UPLOAD PROCESS
     if uploaded_pdf:
+        status_message = st.empty()
         parseButton = parse_button()
         for idx, doc in enumerate(uploaded_pdf):
             with col1:
-                with st.expander(f"See PDF"):
+                with st.expander(f"See PDF: {doc.name[:35]}"):
                     images = display_image_cached(doc)
                     for page in images:
                         st.image(page, use_column_width=True)
@@ -34,20 +35,27 @@ def main_streamlit():
                         )
                         st.session_state[f"parseInfo{idx}"] = parseInfo
                     except:
-                        st.error("No invoice information detected in your documents.")
+                        status.error("No invoice information detected in your documents.")
                         st.warning("Your document might not an invoice document.")
-                st.success("Parsing complete. Click Data Parsed tab.")
+                status_message.success("Parsing complete. Click Data Parsed tab.")
 
             with col2:
-                with st.expander(f"See Data"):
+                with st.expander(f"See Data: {doc.name[:35]}"):
                     parseInfo = st.session_state.get(f"parseInfo{idx}", False)
                     if parseInfo:
-                        st.write(f"PDF {idx+1}")
-                        for ix, df in enumerate(parseInfo):
+                        for ix, data in enumerate(parseInfo):
+                            df = display_df(data)
                             st.experimental_data_editor(
-                                display_df(df),
+                                df,
                                 key=f"editable_df{ix}_{idx}",
                                 use_container_width=True
+                            )
+                            st.download_button(
+                                label="Download table",
+                                data=df.to_csv(index=False).encode("utf-8"),
+                                file_name=f"table{ix}.csv",
+                                mime="text/csv",
+                                key=f"download_table{ix}_pdf{idx}"
                             )
 
     else:

@@ -9,6 +9,7 @@ from main_project.main import recognize_this
 from pdf2image import convert_from_path
 
 def main_streamlit():
+    # st.set_page_config(layout="wide")
     # SETUP SIDEBAR & UPLOAD PART
     uploaded_pdf = sidebar()
 
@@ -45,17 +46,11 @@ def main_streamlit():
                     if parseInfo:
                         for ix, data in enumerate(parseInfo):
                             df = display_df(data)
-                            st.experimental_data_editor(
+                            data_table = st.experimental_data_editor(
                                 df,
                                 key=f"editable_df{ix}_{idx}",
+                                num_rows="dynamic",
                                 use_container_width=True
-                            )
-                            st.download_button(
-                                label="Download table",
-                                data=df.to_csv(index=False).encode("utf-8"),
-                                file_name=f"table{ix}.csv",
-                                mime="text/csv",
-                                key=f"download_table{ix}_pdf{idx}"
                             )
 
     else:

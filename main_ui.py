@@ -1,6 +1,7 @@
 import streamlit as st
 from streamlitui.fr_ui import sidebar, parse_button, display_df
 from streamlitui.utils import display_image_cached
+import pandas as pd
 
 import os, sys
 sys.path.append(os.path.join(os.path.dirname(sys.path[0]), "main_project"))
@@ -54,6 +55,7 @@ def main_streamlit():
                                 num_rows="dynamic",
                                 use_container_width=True
                             )
+                            st.session_state[f"df{ix}_pdf{idx}"] = pd.DataFrame(data_table)
     else:
         st.warning("No PDF uploaded.")
 

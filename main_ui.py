@@ -15,8 +15,6 @@ def main_streamlit():
     # SETUP TAB
     col1, col2 = st.columns(2) #["PDF Uploaded", "Data Parsed"])
     # UPLOAD PROCESS
-    # text_dirs = st.empty()
-    # text_dirs.text("\n".join(os.listdir('.')))
     if uploaded_pdf:
         parseButton = parse_button()
         for idx, doc in enumerate(uploaded_pdf):
@@ -25,22 +23,19 @@ def main_streamlit():
                     images = display_image_cached(doc)
                     for page in images:
                         st.image(page, use_column_width=True)
-            # text_dirs.text("\n".join(os.listdir('.')))
-            # text_dirs.text("\n".join(os.listdir('./data')))
 
             # PARSING PROCESS
             if parseButton:
                 with st.spinner("Parsing..."):
-                    parseInfo = recognize_this(
-                        doc_is_url=False, 
-                        doc_path=doc.getvalue()
-                    )
-                    st.session_state["parseInfo"] = parseInfo
-                        # st.experimental_data_editor(display_df(parseInfo[0]), use_container_width=True)
-                        # st.experimental_data_editor(display_df(parseInfo[1]), use_container_width=True)
-                        # except:
-                            # st.error("No invoice information detected in your documents.")
-                            # st.warning("Your document might not an invoice document.")
+                    try:
+                        parseInfo = recognize_this(
+                            doc_is_url=False, 
+                            doc_path=doc.getvalue()
+                        )
+                        st.session_state["parseInfo"] = parseInfo
+                    except:
+                        st.error("No invoice information detected in your documents.")
+                        st.warning("Your document might not an invoice document.")
 
             with col2:
                 parseInfo = st.session_state.get("parseInfo", False)

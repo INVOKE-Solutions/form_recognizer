@@ -6,7 +6,7 @@ from typing import Dict
 import azure
 from azure.ai.formrecognizer import DocumentAnalysisClient
 from azure.core.credentials import AzureKeyCredential
-
+from main_project.utils import configure
 def format_polygon(polygon):
     if not polygon:
         return "N/A"
@@ -39,7 +39,7 @@ def analyze_document(doc_is_url=False,
         prebuilt_model: Pre-built model from Form Recognizer (default is prebuild-document; 
                         alternative; invoice-document)
     """
-
+    configure()
     doc_analysis_client = DocumentAnalysisClient(
                             endpoint=os.getenv("endpoint"),
                             credential=AzureKeyCredential(os.getenv("key")))

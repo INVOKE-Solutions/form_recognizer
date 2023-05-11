@@ -8,7 +8,7 @@ from pathlib import Path
 
 local_pdf_path = Path('/home/ammar/INVOKE/invoice_parser/venvParser/project/pdf_test')
 url_pdf = "https://raw.githubusercontent.com/Azure-Samples/cognitive-services-REST-api-samples/master/curl/form-recognizer/sample-invoice.pdf"
-def main():
+def recognize_this():
     configure()
     print("Recognition started...")
     document_result = analyze_document(
@@ -33,5 +33,5 @@ def main():
     # return basic_information
 
 
-if __name__ == "__main__":
-    main()
+# if __name__ == "__main__":
+#     main()

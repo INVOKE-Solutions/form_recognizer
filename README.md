@@ -7,11 +7,23 @@
 # Pre-requisite 
 1. Install all the requirement from `requirements.txt` by `pip install -r requirements.txt`
 2. Prepare your own `.env` file that store the `endpoint` and `key` you got from Azure Form Recognition into the `form_recognizer` directory. 
-3. To execute the parser, `cd` into `main_project` and run the following command on CLI:
+
+## Run using python script
+1. To execute the parser, `cd` into `main_project` and run the following command on cmd:
 ```
 $ python3 main.py
 ```
-4. Output should return a `Dict[List]` that contains the contents of the document.
+2. Output should return a `Dict[List]` that contains the contents of the document.
+
+## Run using CLI 
+1. Create folder name `test_pdf` outside the `form_recgonizer` directory.
+2. Put the pdf document into it.
+3. `cd` into `form_recognizer` directory. 
+4. Run the following command:
+```
+$ python -m formcli parse --locpath <path/to/test_pdf/document.pdf>
+```
+2. Output should return a `Dict[List]` that contains the contents of the document.
 
 # Unit-testing
 1. To run unit test, make sure you are on `form_recognizer` dir. 
@@ -24,7 +36,7 @@ $ python -m pytest unit_test/test_fr.py
 # Development
 
 ## Next sprint
-* Building CLI 
+- [ ]
 
 ## Source 
 * [concept-model-overview](https://learn.microsoft.com/en-us/azure/applied-ai-services/form-recognizer/concept-model-overview?view=form-recog-3.0.0)

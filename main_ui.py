@@ -39,7 +39,7 @@ def main_streamlit():
                         )
                         st.session_state[f"parseInfo{idx}"] = parseInfo
                     except:
-                        status.error("No invoice information detected in your documents.")
+                        st.error("No invoice information detected in your documents.")
                         st.warning("Your document might not an invoice document.")
                 status_message.success("Parsing complete. Click Data Parsed tab.")
 

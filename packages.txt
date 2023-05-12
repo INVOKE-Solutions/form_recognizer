@@ -1,1 +1,3 @@
 poppler-utils
+mssql-tools
+unixodbc-dev

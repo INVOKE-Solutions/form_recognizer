@@ -13,27 +13,28 @@ def conn_load_sql(updatedInfo):
     conn_string = f'DRIVER={{ODBC Driver 18 for SQL Server}};SERVER={server};DATABASE={database};UID={username};PWD={password}'
     # Create a SQLAlchemy engine object
     engine = create_engine('mssql+pyodbc:///?odbc_connect={}'.format(conn_string))
-    # Connect to the database
-    # conn = pyodbc.connect(conn_string)
-    # ----------------------------------------------------------------------------------
     # Extracted data from docs
-    # df = pd.DataFrame(updatedInfo)
     df = updatedInfo.copy()
-    #print(f'dataframe 1: {df.head()}')
     df = df[["Attribute","Value"]]
-    # df = df.loc[df["Attribute"].isin(["InvoiceId", "VendorName", "InvoiceDate", "InvoiceTotal"])].T
     df = df.set_index("Attribute").T
-    #print(f'dataframe 2: {df.head()}')
-    # df = df[df['Attribute'] != 'Conf']
-    #print(f'dataframe 2: {df.head()}')
-    df = df[["InvoiceId","VendorName", "InvoiceDate", "InvoiceTotal"]]
+    df = df[["InvoiceId", "VendorName", "InvoiceDate", "InvoiceTotal"]]
     current_time = datetime.datetime.now()
-    #current_time = current_time.strftime('%Y-%m-%d %H:%M:%S')
-    df.loc["Value","DateCreated"] = current_time
-    new_order = ["InvoiceId","VendorName", "InvoiceDate", "InvoiceTotal", 'DateCreated']
+    df.loc["Value", "DateCreated"] = current_time
+    new_order = ["InvoiceId", "VendorName", "InvoiceDate", "InvoiceTotal", 'DateCreated']
+
     # Reorder the columns using reindex()
     df = df.reindex(columns=new_order)
     #print(f'df.loc[0,"InvoiceDate"] = {df.loc[0,"InvoiceDate"]}')
+    try:
+        date = re.split("[^0-9]+", df["InvoiceDate"])
+        date = "-".join(date[:3])
+        date = pd.to_datetime(date, dayfirst=True)
+        df.loc[:, "InvoiceDate"] = date
+    except pd._libs.tslibs.parsing.DateParseError:
+        raise ValueError("Enter a valid date into the InvoiceDate column")
+    except ValueError:
+        raise ValueError("Enter a valid date into the InvoiceDate column")
+
     #if df.loc[0,"InvoiceDate"] == "":
     #    df.loc[0,"InvoiceDate"] = None
     # print(f'dataframe 3: {df.head()}')
@@ -46,8 +47,6 @@ def conn_load_sql(updatedInfo):
     df.to_sql(existing_table, engine, index=False, if_exists='append')
     engine.dispose()
     return df
-    # Append the pandas dataframe to the existing table in the Azure SQL database
-    # df.to_sql(existing_table, conn, index=False, if_exists='append')
 
 def parse_submitbutton():
     submitbutton = st.button(

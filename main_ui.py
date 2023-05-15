@@ -3,6 +3,7 @@ from streamlitui.fr_ui import sidebar, parse_button, display_df
 from streamlitui.utils import display_image_cached
 import pyodbc
 import pandas as pd
+import re
 
 import os, sys
 sys.path.append(os.path.join(os.path.dirname(sys.path[0]), "main_project"))
@@ -43,9 +44,15 @@ def main_streamlit():
                             doc_path=doc.getvalue()
                         )
                         st.session_state[f"parseInfo{idx}"] = parseInfo
-                    except:
+
+                    except KeyError:
+                        st.error("You are not authorized to perform this action")
+
+                    except Exception as e:
                         st.error("No invoice information detected in your documents.")
                         st.warning("Your document might not an invoice document.")
+                        raise e
+
                 status_message.success("Parsing complete. Click Data Parsed tab.")
 
             with col2:

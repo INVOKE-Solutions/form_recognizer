@@ -33,11 +33,12 @@ def conn_load_sql(updatedInfo):
     new_order = ["InvoiceId","VendorName", "InvoiceDate", "InvoiceTotal", 'DateCreated']
     # Reorder the columns using reindex()
     df = df.reindex(columns=new_order)
-    if df.loc[0,"InvoiceDate"] == "":
-        df.loc[0,"InvoiceDate"] = None
+    #print(f'df.loc[0,"InvoiceDate"] = {df.loc[0,"InvoiceDate"]}')
+    #if df.loc[0,"InvoiceDate"] == "":
+    #    df.loc[0,"InvoiceDate"] = None
     # print(f'dataframe 3: {df.head()}')
-    print("----------------------------------------------------------------------------")
-    print(f'Datatype---> {type(df.loc[0,"InvoiceDate"])}')
+    #print("----------------------------------------------------------------------------")
+    #print(f'Datatype---> {type(df.loc[0,"InvoiceDate"])}')
     # ----------------------------------------------------------------------------------
     # Load the table into your Azure SQL database
     # Name of the existing table to append to

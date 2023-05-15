@@ -3,12 +3,10 @@ from streamlitui.fr_ui import sidebar, parse_button, display_df
 from streamlitui.utils import display_image_cached
 import pyodbc
 import pandas as pd
-
 import os, sys
 sys.path.append(os.path.join(os.path.dirname(sys.path[0]), "main_project"))
 from main_project.main import recognize_this
 from main_project.sql_database import conn_load_sql, parse_submitbutton, view_df
-
 from pdf2image import convert_from_path
 
 def main_streamlit():
@@ -25,10 +23,8 @@ def main_streamlit():
     # UPLOAD PROCESS
     if uploaded_pdf:
         status_message = st.empty()
-        #parseButton = parse_button()
         for idx, doc in enumerate(uploaded_pdf):
             with col1:
-                #with st.expander(f"See PDF: {doc.name[:35]}"):
                 st.subheader("Invoice image")
                 images = display_image_cached(doc)
                 for page in images:
@@ -49,7 +45,6 @@ def main_streamlit():
                 status_message.success("Parsing complete. Click Data Parsed tab.")
 
             with col2:
-                #with st.expander(f"See Data: {doc.name[:35]}"):
                 st.subheader("Invoice extracted details")
                 parseInfo = st.session_state.get(f"parseInfo{idx}", False)
                 if parseInfo:
@@ -69,9 +64,6 @@ def main_streamlit():
             parsesubmitbutton = parse_submitbutton()
             if parsesubmitbutton:
                 updatedInfo = st.session_state.get(f"df{idx}+pdf0", False) # boolean
-                #st.write(f"DEBUG {df}")
-                #st.dataframe(updatedInfo.set_index("Attribute").T[["InvoiceId", "VendorName", "InvoiceDate", "InvoiceTotal"]])
-
                 if updatedInfo is not False:
                     # SQL database details
                     try:
@@ -80,21 +72,9 @@ def main_streamlit():
                         df_view = view_df()
                         st.subheader("Invoice database")
                         st.dataframe(df_view)
-                        # st.dataframe(df)
                     except Exception as e1:
                         st.error(f"E1: {e1}")
-                    #try:
-                        # existing_table = 'invoke_invoice_database'
-                        # df.to_sql(existing_table, conn, index=False, if_exists='append')
-                        # Close the SQLAlchemy engine object
-                        # engine.dispose()
-                        # st.write("Load data into database successful")
-                        # st.dataframe(df)
-                    #except Exception as e2:
-                    #    st.error(f"E2: {e2}")
-                    # except:
-                    #     st.error("Unable to connect to SQL Database.")
-                    #     st.warning("Load data into database failed")
+
     else:
         st.warning("No PDF uploaded.")
 

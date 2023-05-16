@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 from sqlalchemy import create_engine
 import datetime
+import re
 
 # Create a connection string
 def conn_load_sql(updatedInfo):
@@ -28,7 +29,7 @@ def conn_load_sql(updatedInfo):
     df = df.reindex(columns=new_order)
 
     try:
-        date = re.split("[^0-9]+", df["InvoiceDate"])
+        date = re.split("[^0-9]+", df.at["Value", "InvoiceDate"])
         date = [num for num in date if num != ""]
         date = "-".join(date[:3])
         date = pd.to_datetime(date, dayfirst=True)

@@ -23,6 +23,7 @@ def main_streamlit():
     # UPLOAD PROCESS
     if uploaded_pdf:
         status_message = st.empty()
+        parseButton = parse_button()
         for idx, doc in enumerate(uploaded_pdf):
             with col1:
                 st.subheader("Invoice image")
@@ -65,15 +66,21 @@ def main_streamlit():
             if parsesubmitbutton:
                 updatedInfo = st.session_state.get(f"df{idx}+pdf0", False) # boolean
                 if updatedInfo is not False:
-                    # SQL database details
-                    try:
-                        df = conn_load_sql(updatedInfo) 
-                        st.write("Load data into database successful")
-                        df_view = view_df()
-                        st.subheader("Invoice database")
-                        st.dataframe(df_view)
-                    except Exception as e1:
-                        st.error(f"E1: {e1}")
+                    parsesubmitbutton = parse_submitbutton()
+                    if parsesubmitbutton:
+                        # SQL database details
+                        try:
+                            df = conn_load_sql(updatedInfo) 
+                            st.write("Load data into database successful")
+                        except Exception as connError:
+                            st.error(f"ConnError: {connError}")
+
+                        try:
+                            df_view = view_df()
+                            st.subheader("Invoice database")
+                            st.dataframe(df_view)
+                        except Exception as viewdfError:
+                            st.error(f"ViewDfError: {viewdfError}")
 
     else:
         st.warning("No PDF uploaded.")

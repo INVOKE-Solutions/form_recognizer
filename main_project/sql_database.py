@@ -6,13 +6,15 @@ import datetime
 # Create a connection string
 def conn_load_sql(updatedInfo):
     # SQL database details
-    server = 'invoiceparser-sqlserver.database.windows.net'
-    database = 'invoiceparser-sqldb'
-    username = 'invoiceparser'
-    password = "sU3g)2ZUG6FF,N',9u3r"
+    server = st.secrets["SQL_SERVER"]
+    database = st.secrets["SQL_DATABASE"]
+    username = st.secrets["SQL_USERNAME"]
+    password = st.secrets["SQL_PASSWORD"]
     conn_string = f'DRIVER={{ODBC Driver 18 for SQL Server}};SERVER={server};DATABASE={database};UID={username};PWD={password}'
+
     # Create a SQLAlchemy engine object
     engine = create_engine('mssql+pyodbc:///?odbc_connect={}'.format(conn_string))
+
     # Extracted data from docs
     df = updatedInfo.copy()
     df = df[["Attribute","Value"]]
@@ -24,7 +26,7 @@ def conn_load_sql(updatedInfo):
 
     # Reorder the columns using reindex()
     df = df.reindex(columns=new_order)
-    #print(f'df.loc[0,"InvoiceDate"] = {df.loc[0,"InvoiceDate"]}')
+
     try:
         date = re.split("[^0-9]+", df["InvoiceDate"])
         date = [num for num in date if num != ""]
@@ -38,9 +40,6 @@ def conn_load_sql(updatedInfo):
     except ValueError:
         raise ValueError("Enter a valid date into the InvoiceDate column")
 
-    #print("----------------------------------------------------------------------------")
-    #print(f'Datatype---> {type(df.loc[0,"InvoiceDate"])}')
-    # ----------------------------------------------------------------------------------
     # Load the table into your Azure SQL database
     # Name of the existing table to append to
     existing_table = 'invoke_invoice_database'
@@ -60,10 +59,10 @@ def parse_submitbutton():
 def view_df():
     import pyodbc
     # SQL database details
-    server = 'invoiceparser-sqlserver.database.windows.net'
-    database = 'invoiceparser-sqldb'
-    username = 'invoiceparser'
-    password = "sU3g)2ZUG6FF,N',9u3r"
+    server = st.secrets["SQL_SERVER"]
+    database = st.secrets["SQL_DATABASE"]
+    username = st.secrets["SQL_USERNAME"]
+    password = st.secrets["SQL_PASSWORD"]
     cnxn = pyodbc.connect(f'DRIVER={{ODBC Driver 18 for SQL Server}};SERVER={server};DATABASE={database};UID={username};PWD={password}')
 
     # Define the SQL query to retrieve the data from the table

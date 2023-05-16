@@ -3,14 +3,10 @@ from streamlitui.fr_ui import sidebar, parse_button, display_df
 from streamlitui.utils import display_image_cached
 import pyodbc
 import pandas as pd
-import re
-
 import os, sys
 sys.path.append(os.path.join(os.path.dirname(sys.path[0]), "main_project"))
 from main_project.main import recognize_this
 from main_project.sql_database import conn_load_sql, parse_submitbutton, view_df
-from streamlit.components.v1 import html
-
 from pdf2image import convert_from_path
 
 def main_streamlit():

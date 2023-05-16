@@ -21,6 +21,7 @@ def main_streamlit():
     # SETUP TAB & SIDEBAR
     uploaded_pdf = sidebar()
     st.header("Please review and update(if any) the extracted information before publish")
+    status_message = st.empty()
     tab1, tab2 = st.tabs(["Input Data", "View Database"])
 
     with tab1:
@@ -29,7 +30,6 @@ def main_streamlit():
 
         # UPLOAD PROCESS
         if uploaded_pdf:
-            status_message = st.empty()
             for idx, doc in enumerate(uploaded_pdf):
                 if len(doc.name) > 40:
                     truncated_name = doc.name[:37] + "..."
@@ -54,14 +54,14 @@ def main_streamlit():
                             st.session_state[f"parseInfo{idx}"] = parseInfo
 
                         except KeyError:
-                            st.error("You are not authorized to perform this action")
+                            status_message.error("You are not authorized to perform this action")
 
                         except Exception as e:
-                            st.error("No invoice information detected in your documents.")
-                            st.warning("Your document might not an invoice document.")
+                            status_message.error("No invoice information detected in your documents.")
+                            status_message.warning("Your document might not an invoice document.")
                             raise e
 
-                    status_message.success("Parsing complete. Click Data Parsed tab.")
+                        status_message.success("Parsing complete. Click Data Parsed tab.")
 
                 with col2:
                     with st.expander(f"See Data: {doc.name[:35]}"):

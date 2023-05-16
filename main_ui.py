@@ -66,7 +66,7 @@ def main_streamlit():
             if parsesubmitbutton:
                 updatedInfo = st.session_state.get(f"df{idx}+pdf0", False) # boolean
                 if updatedInfo is not False:
-                    parsesubmitbutton = parse_submitbutton()
+                    # parsesubmitbutton = parse_submitbutton()
                     if parsesubmitbutton:
                         # SQL database details
                         try:

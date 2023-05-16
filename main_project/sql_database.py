@@ -26,9 +26,9 @@ def conn_load_sql(df_cleaned):
     # Load the table into your Azure SQL database
     # Name of the existing table to append to
     existing_table = 'invoke_invoice_database'
-    df_cleaned.to_sql(existing_table, engine, index=False, if_exists='append')
+    df.to_sql(existing_table, engine, index=False, if_exists='append')
     engine.dispose()
-    return df_cleaned
+    return df
 
 def dataframeSetup(updatedInfo):
     df = updatedInfo.copy()

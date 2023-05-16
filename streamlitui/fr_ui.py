@@ -27,7 +27,15 @@ def parse_button():
 
 def display_df(data:Dict):
     df = pd.DataFrame(data)
-    df = df.loc[df["Conf"].notna()]
+    df = df[df['Attribute'].isin(["InvoiceId", "VendorName", "InvoiceDate", "InvoiceTotal"])]
+    attribute = df["Attribute"].to_list()
+    col = ["InvoiceId", "VendorName", "InvoiceDate", "InvoiceTotal"]
+    for i in col:
+        if i in attribute:
+            pass
+        else:
+            new_row = {'Attribute': i, 'Value': None, 'Conf': 0}
+            df = pd.concat([df, pd.DataFrame([new_row])], ignore_index=True)
+    #df = df.loc[df["Conf"].notna()]
     df = df.reset_index(drop=True)
     return df
-

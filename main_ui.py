@@ -37,11 +37,11 @@ def main_streamlit():
                     truncated_name = doc.name[:40]
 
                 with col1:
+                    st.subheader("Invoice image")
+                    parseButton = parse_button()
                     with st.expander(f"See PDF: {truncated_name}"):
-                        st.subheader("Invoice image")
                         images = display_image_cached(doc)
                         st.image(images, use_column_width=True)
-                    parseButton = parse_button()
 
                 # PARSING PROCESS
                 if parseButton:
@@ -63,28 +63,27 @@ def main_streamlit():
 
                         status_message.success("Parsing complete. Click Data Parsed tab.")
 
-                with col2:
-                    with st.expander(f"See Data: {doc.name[:35]}"):
+                    with col2:
                         st.subheader("Invoice extracted details")
-                        parseInfo = st.session_state.get(f"parseInfo{idx}", False)
-                        if parseInfo:
-                            print(parseInfo[0])
-                            for ix, data in enumerate(parseInfo):
-                                df = display_df(data)
-                                data_table = st.experimental_data_editor(
-                                    df,
-                                    key=f"editable_df{ix}_{idx}",
-                                    num_rows="dynamic",
-                                    use_container_width=True
-                                )
-                                st.session_state[f'df{ix}+pdf{idx}'] = pd.DataFrame(data_table)
-                                break
-                        else:
-                            pass
-                with col2:
-                    parsesubmitbutton = parse_submitbutton()
+                        parsesubmitbutton = parse_submitbutton()
+                        with st.expander(f"See Data: {truncated_name}"):
+                            parseInfo = st.session_state.get(f"parseInfo{idx}", False)
+                            if parseInfo:
+                                print(parseInfo[0])
+                                for ix, data in enumerate(parseInfo):
+                                    df = display_df(data)
+                                    data_table = st.experimental_data_editor(
+                                        df,
+                                        key=f"editable_df{ix}_{idx}",
+                                        num_rows="dynamic",
+                                        use_container_width=True
+                                    )
+                                    st.session_state[f'df{ix}+pdf{idx}'] = pd.DataFrame(data_table)
+                                    break
+                            else:
+                                pass
 
-                if parsesubmitbutton:
+                if st.session_state.get("parse_submitbutton", False):
                     updatedInfo = st.session_state.get(f"df{idx}+pdf0", False) # boolean
 
                     if updatedInfo is not False:

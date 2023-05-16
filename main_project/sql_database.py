@@ -55,6 +55,21 @@ def dataframeSetup(updatedInfo):
     current_time = datetime.datetime.now()
     df.loc["Value","DateCreated"] = current_time
     new_order = ["InvoiceId","VendorName", "InvoiceDate", "InvoiceTotal", 'DateCreated']
+
+    # Check datatype of date
+    try:
+        date = re.split("[^0-9]+", df.at["Value", "InvoiceDate"])
+        date = [num for num in date if num != ""]
+        date = "-".join(date[:3])
+        date = pd.to_datetime(date, dayfirst=True)
+        df.loc[:, "InvoiceDate"] = date
+
+    except pd._libs.tslibs.parsing.DateParseError:
+        raise ValueError("Enter a valid date into the InvoiceDate column")
+
+    except ValueError:
+        raise ValueError("Enter a valid date into the InvoiceDate column")
+
     # Reorder the columns using reindex()
     df_cleaned = df.reindex(columns=new_order)
     return df_cleaned

@@ -30,6 +30,8 @@ def main_streamlit():
 
         # UPLOAD PROCESS
         if uploaded_pdf:
+            parseButton = parse_button()
+            st.subheader("Invoice extracted details")
             for idx, doc in enumerate(uploaded_pdf):
                 if len(doc.name) > 40:
                     truncated_name = doc.name[:37] + "..."
@@ -37,9 +39,8 @@ def main_streamlit():
                     truncated_name = doc.name[:40]
 
                 with col1:
-                    st.subheader("Invoice image")
-                    parseButton = parse_button()
                     with st.expander(f"See PDF: {truncated_name}"):
+                        st.subheader("Invoice image")
                         images = display_image_cached(doc)
                         st.image(images, use_column_width=True)
 
@@ -64,7 +65,6 @@ def main_streamlit():
                         status_message.success("Parsing complete. Click Data Parsed tab.")
 
                     with col2:
-                        st.subheader("Invoice extracted details")
                         parsesubmitbutton = parse_submitbutton()
                         with st.expander(f"See Data: {truncated_name}"):
                             parseInfo = st.session_state.get(f"parseInfo{idx}", False)
@@ -87,6 +87,8 @@ def main_streamlit():
                     updatedInfo = st.session_state.get(f"df{idx}+pdf0", False) # boolean
 
                     if updatedInfo is not False:
+                        parsesubmitbutton = parse_submitbutton()
+
                         # SQL database details
                         try:
                             df = conn_load_sql(updatedInfo) 

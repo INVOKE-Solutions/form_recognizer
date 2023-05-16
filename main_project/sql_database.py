@@ -27,17 +27,17 @@ def conn_load_sql(updatedInfo):
     #print(f'df.loc[0,"InvoiceDate"] = {df.loc[0,"InvoiceDate"]}')
     try:
         date = re.split("[^0-9]+", df["InvoiceDate"])
+        date = [num for num in date if num != ""]
         date = "-".join(date[:3])
         date = pd.to_datetime(date, dayfirst=True)
         df.loc[:, "InvoiceDate"] = date
+
     except pd._libs.tslibs.parsing.DateParseError:
         raise ValueError("Enter a valid date into the InvoiceDate column")
+
     except ValueError:
         raise ValueError("Enter a valid date into the InvoiceDate column")
 
-    #if df.loc[0,"InvoiceDate"] == "":
-    #    df.loc[0,"InvoiceDate"] = None
-    # print(f'dataframe 3: {df.head()}')
     #print("----------------------------------------------------------------------------")
     #print(f'Datatype---> {type(df.loc[0,"InvoiceDate"])}')
     # ----------------------------------------------------------------------------------

@@ -17,7 +17,7 @@ def main_streamlit():
     # SETUP SIDEBAR & UPLOAD PART
     uploaded_pdf = sidebar()
     st.header("Please review and update(if any) the extracted information before publish")
-    parseButton = parse_button()
+    # parseButton = parse_button()
     # SETUP TAB
     col1, col2 = st.columns(2) #["PDF Uploaded", "Data Parsed"])
     # UPLOAD PROCESS

@@ -3,6 +3,7 @@ from streamlitui.fr_ui import sidebar, parse_button, display_df
 from streamlitui.utils import display_image_cached
 import pyodbc
 import pandas as pd
+from datetime import datetime
 import os, sys
 sys.path.append(os.path.join(os.path.dirname(sys.path[0]), "main_project"))
 from main_project.main import recognize_this
@@ -128,6 +129,12 @@ def main_streamlit():
                     df_view = view_df()
                     st.subheader("Invoice database")
                     st.dataframe(df_view)
+
+                    now = datetime.now()
+                    current_time = now.strftime("%d/%m/%Y %H:%M:%S")
+                    st.download_button(label="Download as CSV", data=df_view, 
+                                    file_name=f"invoice_database{current_time}.csv", 
+                                    mime='text/csv')
                 except Exception as viewdfError:
                     st.error(f"ViewDfError: {viewdfError}")
 

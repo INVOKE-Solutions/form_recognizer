@@ -116,10 +116,10 @@ def main_streamlit():
                         st.error(f"E1: {e1}")
                         
 
-                    with tab2:
-                        df_view = view_df()
-                        st.subheader("Invoice database")
-                        st.dataframe(df_view)
+            with tab2:
+                df_view = view_df()
+                st.subheader("Invoice database")
+                st.dataframe(df_view)
                     # parsesubmitbutton = parse_submitbutton()
                     # if parsesubmitbutton:
                     #     # Setup dataframe:

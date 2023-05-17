@@ -142,7 +142,7 @@ def main_streamlit():
                     st.error(f"ViewDfError: {viewdfError}")
 
         else:
-            status_message.warning("No PDF uploaded.")
+            status_message.warning("Document is not parsed yet.")
 
             
 

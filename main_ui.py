@@ -90,17 +90,17 @@ def main_streamlit():
 
             for idx, data in enumerate(parseInfo):
                 with data_elements[idx][0]:
-                        with data_elements[idx][2]:
-                            st.subheader("Invoice extracted details")
-                            data_table = st.experimental_data_editor(
-                                display_df(parseInfo[idx][0]),
-                                key=f"editable_df{idx}",
-                                num_rows="dynamic",
-                                use_container_width=True
-                            )
-                            pdf = pd.DataFrame(data_table)
-                            pdf = pdf.replace(["None", "none", "", "False"], np.NAN)
-                            st.session_state[f"pdf{idx}"] = pdf
+                    with data_elements[idx][2]:
+                        st.subheader("Invoice extracted details")
+                        data_table = st.experimental_data_editor(
+                            display_df(parseInfo[idx][0]),
+                            key=f"editable_df{idx}",
+                            num_rows="dynamic",
+                            use_container_width=True
+                        )
+                        pdf = pd.DataFrame(data_table)
+                        pdf = pdf.replace(["None", "none", "", "False"], np.NAN)
+                        st.session_state[f"pdf{idx}"] = pdf
 
         # Saving extracted document data to database
         if st.session_state.get("parse_submitbutton", False):
@@ -111,49 +111,28 @@ def main_streamlit():
                     try:
                         df = conn_load_sql(updatedInfo)
                         status_message.success("Load data into database successful. Go to View Database tab to see the database.")
-                    except Exception as e1:
+                    except Exception as e: 
+                        sqlstate = e.args[0]
+                        if '42000' in str(sqlstate):
+                            # Handling code for the specific error
+                            st.error("DataTypeError: Please make sure InvoiceTotal in number format.")
+                        elif '23000' in str(sqlstate):
+                            st.error("Invoice number has been used in the database.")
+                        elif '22007' in str(sqlstate):
+                            st.error("DataTypeError: Please make sure invoiceDate in date format.")
+                        else:
+                            st.error(f"Other error: {e}")
                         
-                        st.error(f"E1: {e1}")
-                        
-
             with tab2:
-                df_view = view_df()
-                st.subheader("Invoice database")
-                st.dataframe(df_view)
+                try:
+                    df_view = view_df()
+                    st.subheader("Invoice database")
+                    st.dataframe(df_view)
+                except Exception as viewdfError:
+                    st.error(f"ViewDfError: {viewdfError}")
 
         else:
             status_message.warning("No PDF uploaded.")
-                    # parsesubmitbutton = parse_submitbutton()
-                    # if parsesubmitbutton:
-                    #     # Setup dataframe:
-                    #     try:
-                    #         df_cleaned = dataframeSetup(updatedInfo)
-                    #         st.write("Data checked")
-                    #         st.dataframe(df_cleaned)
-                    #     except Exception as dataError:
-                    #         st.error(f"DataError: {dataError}")
-                    #     # SQL database connection
-                    #     try:
-                    #         df_cleaned = conn_load_sql(df_cleaned) 
-                    #         st.write("Load data into database successful")
-                    #     except Exception as e: 
-                    #         sqlstate = e.args[0]
-                    #         if '42000' in str(sqlstate):
-                    #             # Handling code for the specific error
-                    #             st.error("DataTypeError: Please make sure InvoiceTotal in number format.")
-                    #         elif '23000' in str(sqlstate):
-                    #             st.error("Invoice number has been used in the database.")
-                    #         elif '22007' in str(sqlstate):
-                    #             st.error("DataTypeError: Please make sure invoiceDate in date format.")
-                    #         else:
-                    #             st.error(f"Other error: {e}")
-                    #     # Extract and view dataframe in Streamlit
-                    #     try:
-                    #         df_view = view_df()
-                    #         st.subheader("Invoice database")
-                    #         st.dataframe(df_view)
-                    #     except Exception as viewdfError:
-                    #         st.error(f"ViewDfError: {viewdfError}")
 
             
 

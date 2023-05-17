@@ -8,6 +8,7 @@ sys.path.append(os.path.join(os.path.dirname(sys.path[0]), "main_project"))
 from main_project.main import recognize_this
 from main_project.sql_database import conn_load_sql, parse_submitbutton, view_df
 from pdf2image import convert_from_path
+import numpy as np
 
 def main_streamlit():
     # Force UI to use widemode
@@ -97,7 +98,9 @@ def main_streamlit():
                                 num_rows="dynamic",
                                 use_container_width=True
                             )
-                            st.session_state[f"pdf{idx}"] = pd.DataFrame(data_table)
+                            pdf = pd.DataFrame(data_table)
+                            pdf = pdf.replace(["None", "none", "", "False"], np.NAN)
+                            st.session_state[f"pdf{idx}"] = pdf
 
         # Saving extracted document data to database
         if st.session_state.get("parse_submitbutton", False):
@@ -106,14 +109,15 @@ def main_streamlit():
                 if updatedInfo is not False:
                     # SQL database details
                     try:
-                        df = conn_load_sql(updatedInfo) 
-                        st.write("Load data into database successful")
-                        df_view = view_df()
-                        st.subheader("Invoice database")
-                        st.dataframe(df_view)
+                        df = conn_load_sql(updatedInfo)
+                        status_message.success("Load data into database successful. Go to View Database tab to see the database.")
                     except Exception as e1:
                         st.error(f"E1: {e1}")
 
+                    with tab2:
+                        df_view = view_df()
+                        st.subheader("Invoice database")
+                        st.dataframe(df_view)
 
 if __name__ == "__main__":
     main_streamlit()

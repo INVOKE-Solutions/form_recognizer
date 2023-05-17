@@ -2,15 +2,17 @@ import streamlit as st
 import pandas as pd
 from sqlalchemy import create_engine
 import datetime
+import re
 
 # Create a connection string
 def conn_load_sql(df_cleaned):
     # SQL database details
-    server = 'invoiceparser-sqlserver.database.windows.net'
-    database = 'invoiceparser-sqldb'
-    username = 'invoiceparser'
-    password = "sU3g)2ZUG6FF,N',9u3r"
+    server = st.secrets["SQL_SERVER"]
+    database = st.secrets["SQL_DATABASE"]
+    username = st.secrets["SQL_USERNAME"]
+    password = st.secrets["SQL_PASSWORD"]
     conn_string = f'DRIVER={{ODBC Driver 18 for SQL Server}};SERVER={server};DATABASE={database};UID={username};PWD={password}'
+
     # Create a SQLAlchemy engine object
     engine = create_engine('mssql+pyodbc:///?odbc_connect={}'.format(conn_string))
     # Extracted data from docs
@@ -19,10 +21,25 @@ def conn_load_sql(df_cleaned):
     df = df.set_index("Attribute").T
     df = df[["InvoiceId","VendorName", "InvoiceDate", "InvoiceTotal"]]
     current_time = datetime.datetime.now()
-    df.loc["Value","DateCreated"] = current_time
-    new_order = ["InvoiceId","VendorName", "InvoiceDate", "InvoiceTotal", 'DateCreated']
+    df.loc["Value", "DateCreated"] = current_time
+    new_order = ["InvoiceId", "VendorName", "InvoiceDate", "InvoiceTotal", 'DateCreated']
+
     # Reorder the columns using reindex()
     df = df.reindex(columns=new_order)
+
+    try:
+        date = re.split("[^0-9]+", df.at["Value", "InvoiceDate"])
+        date = [num for num in date if num != ""]
+        date = "-".join(date[:3])
+        date = pd.to_datetime(date, dayfirst=True)
+        df.loc[:, "InvoiceDate"] = date
+
+    except pd._libs.tslibs.parsing.DateParseError:
+        raise ValueError("Enter a valid date into the InvoiceDate column")
+
+    except ValueError:
+        raise ValueError("Enter a valid date into the InvoiceDate column")
+
     # Load the table into your Azure SQL database
     # Name of the existing table to append to
     existing_table = 'invoke_invoice_database'
@@ -38,6 +55,21 @@ def dataframeSetup(updatedInfo):
     current_time = datetime.datetime.now()
     df.loc["Value","DateCreated"] = current_time
     new_order = ["InvoiceId","VendorName", "InvoiceDate", "InvoiceTotal", 'DateCreated']
+
+    # Check datatype of date
+    try:
+        date = re.split("[^0-9]+", df.at["Value", "InvoiceDate"])
+        date = [num for num in date if num != ""]
+        date = "-".join(date[:3])
+        date = pd.to_datetime(date, dayfirst=True)
+        df.loc[:, "InvoiceDate"] = date
+
+    except pd._libs.tslibs.parsing.DateParseError:
+        raise ValueError("Enter a valid date into the InvoiceDate column")
+
+    except ValueError:
+        raise ValueError("Enter a valid date into the InvoiceDate column")
+
     # Reorder the columns using reindex()
     df_cleaned = df.reindex(columns=new_order)
     return df_cleaned
@@ -53,10 +85,10 @@ def parse_submitbutton():
 def view_df():
     import pyodbc
     # SQL database details
-    server = 'invoiceparser-sqlserver.database.windows.net'
-    database = 'invoiceparser-sqldb'
-    username = 'invoiceparser'
-    password = "sU3g)2ZUG6FF,N',9u3r"
+    server = st.secrets["SQL_SERVER"]
+    database = st.secrets["SQL_DATABASE"]
+    username = st.secrets["SQL_USERNAME"]
+    password = st.secrets["SQL_PASSWORD"]
     cnxn = pyodbc.connect(f'DRIVER={{ODBC Driver 18 for SQL Server}};SERVER={server};DATABASE={database};UID={username};PWD={password}')
     # Define the SQL query to retrieve the data from the table
     query = 'SELECT * FROM invoke_invoice_database'

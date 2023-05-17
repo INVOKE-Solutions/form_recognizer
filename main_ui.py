@@ -6,7 +6,7 @@ import pandas as pd
 import os, sys
 sys.path.append(os.path.join(os.path.dirname(sys.path[0]), "main_project"))
 from main_project.main import recognize_this
-from main_project.sql_database import conn_load_sql, parse_submitbutton, view_df
+from main_project.sql_database import conn_load_sql, parse_submitbutton, view_df, dataframeSetup
 from pdf2image import convert_from_path
 
 def main_streamlit():
@@ -68,13 +68,29 @@ def main_streamlit():
                 if updatedInfo is not False:
                     # parsesubmitbutton = parse_submitbutton()
                     if parsesubmitbutton:
-                        # SQL database details
+                        # Setup dataframe:
                         try:
-                            df = conn_load_sql(updatedInfo) 
+                            df_cleaned = dataframeSetup(updatedInfo)
+                            st.write("Data checked")
+                            st.dataframe(df_cleaned)
+                        except Exception as dataError:
+                            st.error(f"DataError: {dataError}")
+                        # SQL database connection
+                        try:
+                            df_cleaned = conn_load_sql(df_cleaned) 
                             st.write("Load data into database successful")
-                        except Exception as connError:
-                            st.error(f"ConnError: {connError}")
-
+                        except Exception as e: 
+                            sqlstate = e.args[0]
+                            if '42000' in str(sqlstate):
+                                # Handling code for the specific error
+                                st.error("DataTypeError: Please make sure InvoiceTotal in number format.")
+                            elif '23000' in str(sqlstate):
+                                st.error("Invoice number has been used in the database.")
+                            elif '22007' in str(sqlstate):
+                                st.error("DataTypeError: Please make sure invoiceDate in date format.")
+                            else:
+                                st.error(f"Other error: {e}")
+                        # Extract and view dataframe in Streamlit
                         try:
                             df_view = view_df()
                             st.subheader("Invoice database")

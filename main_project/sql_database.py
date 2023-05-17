@@ -14,30 +14,22 @@ def conn_load_sql(df_cleaned):
     # Create a SQLAlchemy engine object
     engine = create_engine('mssql+pyodbc:///?odbc_connect={}'.format(conn_string))
     # Extracted data from docs
-    df = df_cleaned.copy()
-    df = df[["Attribute","Value"]]
-    df = df.set_index("Attribute").T
-    df = df[["InvoiceId","VendorName", "InvoiceDate", "InvoiceTotal"]]
-    current_time = datetime.datetime.now()
-    df.loc["Value","DateCreated"] = current_time
-    new_order = ["InvoiceId","VendorName", "InvoiceDate", "InvoiceTotal", 'DateCreated']
-    # Reorder the columns using reindex()
-    df = df.reindex(columns=new_order)
     # Load the table into your Azure SQL database
     # Name of the existing table to append to
     existing_table = 'invoke_invoice_database'
-    df.to_sql(existing_table, engine, index=False, if_exists='append')
+    df_cleaned.to_sql(existing_table, engine, index=False, if_exists='append')
     engine.dispose()
-    return df
+    return df_cleaned
 
 def dataframeSetup(updatedInfo):
     df = updatedInfo.copy()
     df = df[["Attribute","Value"]]
     df = df.set_index("Attribute").T
-    df = df[["InvoiceId","VendorName", "InvoiceDate", "InvoiceTotal"]]
+    df = df[["InvoiceId","VendorName", "InvoiceDate", "InvoiceTotal", "Currency"]]
     current_time = datetime.datetime.now()
     df.loc["Value","DateCreated"] = current_time
-    new_order = ["InvoiceId","VendorName", "InvoiceDate", "InvoiceTotal", 'DateCreated']
+    df["VendorName"] = df['VendorName'].str.upper()
+    new_order = ["InvoiceId","VendorName", "InvoiceDate", "InvoiceTotal", "Currency", 'DateCreated']
     # Reorder the columns using reindex()
     df_cleaned = df.reindex(columns=new_order)
     return df_cleaned

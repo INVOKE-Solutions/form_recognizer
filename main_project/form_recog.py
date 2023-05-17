@@ -105,13 +105,7 @@ def key_val_extraction(result:azure.ai.formrecognizer._models.AnalyzeResult)->Di
     # return pd.DataFrame(information).head(5)
     return information
 
-def get_basic_info(invoice:azure.ai.formrecognizer._models.AnalyzedDocument, 
-                    infoToget:str):
-    
-    """
-    Return basic information from the document
-    """
-    
+def get_basic_info(invoice, infoToget:str):
     getInfo = invoice.fields.get(infoToget)
 
     if getInfo:
@@ -120,6 +114,8 @@ def get_basic_info(invoice:azure.ai.formrecognizer._models.AnalyzedDocument,
                 infoToget == "VendorAddress" :
             # print(f"{infoToget}: {getInfo.value.city} | {infoToget} confidence: {getInfo.confidence}")
             return (str(getInfo.value.city), str(getInfo.confidence))
+        elif infoToget == "InvoiceTotal":
+            return (str(getInfo.value.symbol), str(getInfo.value),str(getInfo.confidence))
         else:
             # print(f"{infoToget}: {getInfo.value} | {infoToget} confidence: {getInfo.confidence}")
             return (str(getInfo.value), str(getInfo.confidence))

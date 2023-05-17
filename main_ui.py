@@ -104,6 +104,9 @@ def main_streamlit():
                         pdf = pdf.replace(["None", "none", "", "False"], np.NAN)
                         st.session_state[f"pdf{idx}"] = pdf
 
+        else:
+            status_message.warning("No PDF uploaded.")
+
         # Saving extracted document data to database
         if st.session_state.get("parse_submitbutton", False):
             for idx in range(len(uploaded_pdf)):
@@ -141,8 +144,7 @@ def main_streamlit():
                 except Exception as viewdfError:
                     st.error(f"ViewDfError: {viewdfError}")
 
-        else:
-            status_message.warning("Document is not parsed yet.")
+        
 
             
 

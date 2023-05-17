@@ -4,7 +4,7 @@ from streamlitui.utils import display_image_cached
 import pyodbc
 import pandas as pd
 import pytz
-from datetime import datetime
+import datetime
 import os, sys
 sys.path.append(os.path.join(os.path.dirname(sys.path[0]), "main_project"))
 from main_project.main import recognize_this

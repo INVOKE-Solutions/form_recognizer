@@ -15,38 +15,12 @@ def conn_load_sql(df_cleaned):
 
     # Create a SQLAlchemy engine object
     engine = create_engine('mssql+pyodbc:///?odbc_connect={}'.format(conn_string))
-
-    df = df_cleaned.copy()
-    df = df[["Attribute","Value"]]
-    df = df.set_index("Attribute").T
-    df = df[["InvoiceId","VendorName", "InvoiceDate", "InvoiceTotal", "Currency"]]
-    current_time = datetime.datetime.now()
-    df.loc["Value","DateCreated"] = current_time
-    df["VendorName"] = df['VendorName'].str.upper()
-    new_order = ["InvoiceId","VendorName", "InvoiceDate", "InvoiceTotal", "Currency", 'DateCreated']
-
-    # Check datatype of date
-    try:
-        date = re.split("[^0-9]+", df.at["Value", "InvoiceDate"])
-        date = [num for num in date if num != ""]
-        date = "-".join(date[:3])
-        date = pd.to_datetime(date, dayfirst=True)
-        df.loc[:, "InvoiceDate"] = date
-
-    except pd._libs.tslibs.parsing.DateParseError:
-        raise ValueError("Enter a valid date into the InvoiceDate column")
-
-    except ValueError:
-        raise ValueError("Enter a valid date into the InvoiceDate column")
-
-    # Reorder the columns using reindex()
-    df_cleaned = df.reindex(columns=new_order)
-
+    df = dataframeSetup(df_cleaned)
     # Name of the existing table to append to
     existing_table = 'invoke_invoice_database'
-    df_cleaned.to_sql(existing_table, engine, index=False, if_exists='append')
+    df.to_sql(existing_table, engine, index=False, if_exists='append')
     engine.dispose()
-    return df_cleaned
+    return df
 
 def dataframeSetup(updatedInfo):
     df = updatedInfo.copy()

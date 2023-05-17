@@ -120,6 +120,9 @@ def main_streamlit():
                 df_view = view_df()
                 st.subheader("Invoice database")
                 st.dataframe(df_view)
+
+        else:
+            st.warning("No PDF uploaded.")
                     # parsesubmitbutton = parse_submitbutton()
                     # if parsesubmitbutton:
                     #     # Setup dataframe:
@@ -152,8 +155,7 @@ def main_streamlit():
                     #     except Exception as viewdfError:
                     #         st.error(f"ViewDfError: {viewdfError}")
 
-            else:
-                st.warning("No PDF uploaded.")
+            
 
 if __name__ == "__main__":
     main_streamlit()

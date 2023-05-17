@@ -112,6 +112,7 @@ def main_streamlit():
                         df = conn_load_sql(updatedInfo)
                         status_message.success("Load data into database successful. Go to View Database tab to see the database.")
                     except Exception as e1:
+                        raise e1
                         st.error(f"E1: {e1}")
 
                     with tab2:

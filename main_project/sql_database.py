@@ -15,12 +15,12 @@ def conn_load_sql(df_cleaned):
 
     # Create a SQLAlchemy engine object
     engine = create_engine('mssql+pyodbc:///?odbc_connect={}'.format(conn_string))
-
+    df = dataframeSetup(df_cleaned)
     # Name of the existing table to append to
     existing_table = 'invoke_invoice_database'
-    df_cleaned.to_sql(existing_table, engine, index=False, if_exists='append')
+    df.to_sql(existing_table, engine, index=False, if_exists='append')
     engine.dispose()
-    return df_cleaned
+    return df
 
 def dataframeSetup(updatedInfo):
     df = updatedInfo.copy()

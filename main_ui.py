@@ -108,6 +108,8 @@ def main_streamlit():
                 updatedInfo = st.session_state.get(f"pdf{idx}", False) # boolean
                 if updatedInfo is not False:
                     # SQL database details
+                    st.write("TEST TEST")
+                    st.write(updatedInfo)
                     try:
                         df = conn_load_sql(updatedInfo)
                         status_message.success("Load data into database successful. Go to View Database tab to see the database.")

@@ -3,6 +3,7 @@ import pandas as pd
 from sqlalchemy import create_engine
 import datetime
 import re
+from utils import enforce_date_format
 
 # Create a connection string
 def conn_load_sql(df_cleaned):
@@ -27,18 +28,8 @@ def conn_load_sql(df_cleaned):
     # Reorder the columns using reindex()
     df = df.reindex(columns=new_order)
 
-    try:
-        date = re.split("[^0-9]+", df.at["Value", "InvoiceDate"])
-        date = [num for num in date if num != ""]
-        date = "-".join(date[:3])
-        date = pd.to_datetime(date, dayfirst=True)
-        df.loc[:, "InvoiceDate"] = date
-
-    except pd._libs.tslibs.parsing.DateParseError:
-        raise ValueError("Enter a valid date into the InvoiceDate column")
-
-    except ValueError:
-        raise ValueError("Enter a valid date into the InvoiceDate column")
+    # Enforce datatype of date
+    df = enforce_date_format(df)
 
     # Load the table into your Azure SQL database
     # Name of the existing table to append to
@@ -57,18 +48,7 @@ def dataframeSetup(updatedInfo):
     new_order = ["InvoiceId","VendorName", "InvoiceDate", "InvoiceTotal", 'DateCreated']
 
     # Check datatype of date
-    try:
-        date = re.split("[^0-9]+", df.at["Value", "InvoiceDate"])
-        date = [num for num in date if num != ""]
-        date = "-".join(date[:3])
-        date = pd.to_datetime(date, dayfirst=True)
-        df.loc[:, "InvoiceDate"] = date
-
-    except pd._libs.tslibs.parsing.DateParseError:
-        raise ValueError("Enter a valid date into the InvoiceDate column")
-
-    except ValueError:
-        raise ValueError("Enter a valid date into the InvoiceDate column")
+    df = enforce_date_format(df)
 
     # Reorder the columns using reindex()
     df_cleaned = df.reindex(columns=new_order)

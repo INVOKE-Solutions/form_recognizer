@@ -136,7 +136,7 @@ def main_streamlit():
                     time_string = current_time.strftime('%Y-%m-%d %H:%M:%S')
                     
                     st.download_button(label="Download as CSV", data=df_view.to_csv().encode('utf-8'), 
-                                    file_name=f"invoice_database{time_string}.csv", 
+                                    file_name=f"invoice_database_{time_string}.csv", 
                                     mime='text/csv')
                 except Exception as viewdfError:
                     st.error(f"ViewDfError: {viewdfError}")

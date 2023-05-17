@@ -104,8 +104,8 @@ def main_streamlit():
                         pdf = pdf.replace(["None", "none", "", "False"], np.NAN)
                         st.session_state[f"pdf{idx}"] = pdf
 
-        else:
-            status_message.warning("PDF is not parsed yet.")
+        # else:
+        #     status_message.warning("PDF is not parsed yet.")
 
         # Saving extracted document data to database
         if st.session_state.get("parse_submitbutton", False):

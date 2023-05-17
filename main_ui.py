@@ -6,7 +6,7 @@ import pandas as pd
 import os, sys
 sys.path.append(os.path.join(os.path.dirname(sys.path[0]), "main_project"))
 from main_project.main import recognize_this
-from main_project.sql_database import conn_load_sql, parse_submitbutton, view_df
+from main_project.sql_database import conn_load_sql, parse_submitbutton, view_df, dataframeSetup
 from pdf2image import convert_from_path
 import numpy as np
 
@@ -90,17 +90,17 @@ def main_streamlit():
 
             for idx, data in enumerate(parseInfo):
                 with data_elements[idx][0]:
-                        with data_elements[idx][2]:
-                            st.subheader("Invoice extracted details")
-                            data_table = st.experimental_data_editor(
-                                display_df(parseInfo[idx][0]),
-                                key=f"editable_df{idx}",
-                                num_rows="dynamic",
-                                use_container_width=True
-                            )
-                            pdf = pd.DataFrame(data_table)
-                            pdf = pdf.replace(["None", "none", "", "False"], np.NAN)
-                            st.session_state[f"pdf{idx}"] = pdf
+                    with data_elements[idx][2]:
+                        st.subheader("Invoice extracted details")
+                        data_table = st.experimental_data_editor(
+                            display_df(parseInfo[idx][0]),
+                            key=f"editable_df{idx}",
+                            num_rows="dynamic",
+                            use_container_width=True
+                        )
+                        pdf = pd.DataFrame(data_table)
+                        pdf = pdf.replace(["None", "none", "", "False"], np.NAN)
+                        st.session_state[f"pdf{idx}"] = pdf
 
         # Saving extracted document data to database
         if st.session_state.get("parse_submitbutton", False):
@@ -111,13 +111,30 @@ def main_streamlit():
                     try:
                         df = conn_load_sql(updatedInfo)
                         status_message.success("Load data into database successful. Go to View Database tab to see the database.")
-                    except Exception as e1:
-                        st.error(f"E1: {e1}")
+                    except Exception as e: 
+                        sqlstate = e.args[0]
+                        if '42000' in str(sqlstate):
+                            # Handling code for the specific error
+                            st.error("DataTypeError: Please make sure InvoiceTotal in number format.")
+                        elif '23000' in str(sqlstate):
+                            st.error("Invoice number has been used in the database.")
+                        elif '22007' in str(sqlstate):
+                            st.error("DataTypeError: Please make sure invoiceDate in date format.")
+                        else:
+                            st.error(f"Other error: {e}")
+                        
+            with tab2:
+                try:
+                    df_view = view_df()
+                    st.subheader("Invoice database")
+                    st.dataframe(df_view)
+                except Exception as viewdfError:
+                    st.error(f"ViewDfError: {viewdfError}")
 
-                    with tab2:
-                        df_view = view_df()
-                        st.subheader("Invoice database")
-                        st.dataframe(df_view)
+        else:
+            status_message.warning("No PDF uploaded.")
+
+            
 
 if __name__ == "__main__":
     main_streamlit()

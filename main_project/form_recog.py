@@ -105,13 +105,7 @@ def key_val_extraction(result:azure.ai.formrecognizer._models.AnalyzeResult)->Di
     # return pd.DataFrame(information).head(5)
     return information
 
-def get_basic_info(invoice:azure.ai.formrecognizer._models.AnalyzedDocument, 
-                    infoToget:str):
-    
-    """
-    Return basic information from the document
-    """
-    
+def get_basic_info(invoice, infoToget:str):
     getInfo = invoice.fields.get(infoToget)
 
     if getInfo:
@@ -120,6 +114,8 @@ def get_basic_info(invoice:azure.ai.formrecognizer._models.AnalyzedDocument,
                 infoToget == "VendorAddress" :
             # print(f"{infoToget}: {getInfo.value.city} | {infoToget} confidence: {getInfo.confidence}")
             return (str(getInfo.value.city), str(getInfo.confidence))
+        elif infoToget == "InvoiceTotal":
+            return (str(getInfo.value.symbol), str(getInfo.value),str(getInfo.confidence))
         else:
             # print(f"{infoToget}: {getInfo.value} | {infoToget} confidence: {getInfo.confidence}")
             return (str(getInfo.value), str(getInfo.confidence))
@@ -145,6 +141,7 @@ def display_basic_info(invoice_result:azure.ai.formrecognizer._models.AnalyzeRes
             "InvoiceId", 
             "InvoiceDate", 
             "InvoiceTotal", 
+            "Currency", 
             "DueDate", 
             "PurchaseOrder", 
             "BillingAddress"
@@ -156,17 +153,30 @@ def display_basic_info(invoice_result:azure.ai.formrecognizer._models.AnalyzeRes
 
         for content in get_this:
             info = get_basic_info(invoice_result, content)
-            if info == None:
-                    infoDict["Attribute"].append(np.NAN)
+            if content == "Currency":
+                symbol = get_basic_info(invoice=invoice_result, infoToget="InvoiceTotal")[0]
+                conf = get_basic_info(invoice=invoice_result, infoToget="InvoiceTotal")[2]
+                infoDict["Attribute"].append(content)
+                infoDict["Value"].append(symbol)
+                infoDict["Conf"].append(conf)
+            else:
+                if info != None:
+                    if content == "InvoiceTotal":
+                        val = get_basic_info(invoice=invoice_result, infoToget=content)[1]
+                        conf = get_basic_info(invoice=invoice_result, infoToget=content)[2]
+                        infoDict["Attribute"].append(content)
+                        infoDict["Value"].append(val)
+                        infoDict["Conf"].append(conf)
+                    else:
+                        val = get_basic_info(invoice=invoice_result, infoToget=content)[0]
+                        conf = get_basic_info(invoice=invoice_result, infoToget=content)[1]
+                        infoDict["Attribute"].append(content)
+                        infoDict["Value"].append(val)
+                        infoDict["Conf"].append(conf)
+                else: 
+                    infoDict["Attribute"].append(content)
                     infoDict["Value"].append(np.NAN)
                     infoDict["Conf"].append(np.NAN)
-            else:
-                val = get_basic_info(invoice=invoice_result, infoToget=content)[0]
-                conf = get_basic_info(invoice=invoice_result, infoToget=content)[1]
-                infoDict["Attribute"].append(content)
-                infoDict["Value"].append(val)
-                infoDict["Conf"].append(conf)
-
         return infoDict
 
 def get_item_info(item, itemToget:str):

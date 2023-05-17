@@ -15,32 +15,7 @@ def conn_load_sql(df_cleaned):
 
     # Create a SQLAlchemy engine object
     engine = create_engine('mssql+pyodbc:///?odbc_connect={}'.format(conn_string))
-    # Extracted data from docs
-    df = df_cleaned.copy()
-    df = df[["Attribute","Value"]]
-    df = df.set_index("Attribute").T
-    df = df[["InvoiceId","VendorName", "InvoiceDate", "InvoiceTotal"]]
-    current_time = datetime.datetime.now()
-    df.loc["Value", "DateCreated"] = current_time
-    new_order = ["InvoiceId", "VendorName", "InvoiceDate", "InvoiceTotal", 'DateCreated']
 
-    # Reorder the columns using reindex()
-    df = df.reindex(columns=new_order)
-
-    try:
-        date = re.split("[^0-9]+", df.at["Value", "InvoiceDate"])
-        date = [num for num in date if num != ""]
-        date = "-".join(date[:3])
-        date = pd.to_datetime(date, dayfirst=True)
-        df.loc[:, "InvoiceDate"] = date
-
-    except pd._libs.tslibs.parsing.DateParseError:
-        raise ValueError("Enter a valid date into the InvoiceDate column")
-
-    except ValueError:
-        raise ValueError("Enter a valid date into the InvoiceDate column")
-
-    # Load the table into your Azure SQL database
     # Name of the existing table to append to
     existing_table = 'invoke_invoice_database'
     df_cleaned.to_sql(existing_table, engine, index=False, if_exists='append')

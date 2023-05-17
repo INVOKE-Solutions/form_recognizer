@@ -122,7 +122,7 @@ def main_streamlit():
                 st.dataframe(df_view)
 
         else:
-            st.warning("No PDF uploaded.")
+            status_message.warning("No PDF uploaded.")
                     # parsesubmitbutton = parse_submitbutton()
                     # if parsesubmitbutton:
                     #     # Setup dataframe:

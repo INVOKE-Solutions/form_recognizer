@@ -132,7 +132,7 @@ def main_streamlit():
 
                     now = datetime.now()
                     current_time = now.strftime("%d/%m/%Y %H:%M:%S")
-                    st.download_button(label="Download as CSV", data=df_view, 
+                    st.download_button(label="Download as CSV", data=df_view.to_csv().encode('utf-8'), 
                                     file_name=f"invoice_database{current_time}.csv", 
                                     mime='text/csv')
                 except Exception as viewdfError:

@@ -119,36 +119,36 @@ def main_streamlit():
                         st.subheader("Invoice database")
                         st.dataframe(df_view)
                     # parsesubmitbutton = parse_submitbutton()
-                    if parsesubmitbutton:
-                        # Setup dataframe:
-                        try:
-                            df_cleaned = dataframeSetup(updatedInfo)
-                            st.write("Data checked")
-                            st.dataframe(df_cleaned)
-                        except Exception as dataError:
-                            st.error(f"DataError: {dataError}")
-                        # SQL database connection
-                        try:
-                            df_cleaned = conn_load_sql(df_cleaned) 
-                            st.write("Load data into database successful")
-                        except Exception as e: 
-                            sqlstate = e.args[0]
-                            if '42000' in str(sqlstate):
-                                # Handling code for the specific error
-                                st.error("DataTypeError: Please make sure InvoiceTotal in number format.")
-                            elif '23000' in str(sqlstate):
-                                st.error("Invoice number has been used in the database.")
-                            elif '22007' in str(sqlstate):
-                                st.error("DataTypeError: Please make sure invoiceDate in date format.")
-                            else:
-                                st.error(f"Other error: {e}")
-                        # Extract and view dataframe in Streamlit
-                        try:
-                            df_view = view_df()
-                            st.subheader("Invoice database")
-                            st.dataframe(df_view)
-                        except Exception as viewdfError:
-                            st.error(f"ViewDfError: {viewdfError}")
+                    # if parsesubmitbutton:
+                    #     # Setup dataframe:
+                    #     try:
+                    #         df_cleaned = dataframeSetup(updatedInfo)
+                    #         st.write("Data checked")
+                    #         st.dataframe(df_cleaned)
+                    #     except Exception as dataError:
+                    #         st.error(f"DataError: {dataError}")
+                    #     # SQL database connection
+                    #     try:
+                    #         df_cleaned = conn_load_sql(df_cleaned) 
+                    #         st.write("Load data into database successful")
+                    #     except Exception as e: 
+                    #         sqlstate = e.args[0]
+                    #         if '42000' in str(sqlstate):
+                    #             # Handling code for the specific error
+                    #             st.error("DataTypeError: Please make sure InvoiceTotal in number format.")
+                    #         elif '23000' in str(sqlstate):
+                    #             st.error("Invoice number has been used in the database.")
+                    #         elif '22007' in str(sqlstate):
+                    #             st.error("DataTypeError: Please make sure invoiceDate in date format.")
+                    #         else:
+                    #             st.error(f"Other error: {e}")
+                    #     # Extract and view dataframe in Streamlit
+                    #     try:
+                    #         df_view = view_df()
+                    #         st.subheader("Invoice database")
+                    #         st.dataframe(df_view)
+                    #     except Exception as viewdfError:
+                    #         st.error(f"ViewDfError: {viewdfError}")
 
             else:
                 st.warning("No PDF uploaded.")

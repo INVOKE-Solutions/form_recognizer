@@ -6,15 +6,17 @@ import pandas as pd
 import pytz
 import datetime
 import os, sys
+from hmac import compare_digest
+from hashlib import sha256
+from time import sleep
+
 sys.path.append(os.path.join(os.path.dirname(sys.path[0]), "main_project"))
 from main_project.main import recognize_this
 from main_project.sql_database import conn_load_sql, parse_submitbutton, view_df, dataframeSetup
-from pdf2image import convert_from_path
 import numpy as np
 
 def main_streamlit():
     # Force UI to use widemode
-    st.set_page_config(layout="wide")
     st.title("INVOICE PARSER")
 
     # SETUP TAB & SIDEBAR
@@ -142,9 +144,40 @@ def main_streamlit():
                 except Exception as viewdfError:
                     st.error(f"ViewDfError: {viewdfError}")
 
-        
+def main_login():
+    if st.session_state.get("login", False):
+        return True
+    _, col, _ = st.columns([4, 3, 4])
+    with col:
+        placeholder = st.empty()
+        with placeholder.form("login"):
+            st.markdown("#### Login")
+            email = st.text_input("Username", placeholder="username")
+            password = st.text_input("Password", placeholder="Password", type="password")
+            login_button = st.form_submit_button("Login")
 
-            
+            st.session_state["password"] = sha256(bytes(password, "UTF-8")).hexdigest()
+            del password
+
+            if login_button:
+                if not (compare_digest(bytes(st.session_state.get("password", ""), "UTF-8"),
+                                       bytes(st.secrets["LOGIN_KEY"], "UTF-8"))
+                    or compare_digest(bytes(st.session_state.get("username", ""), "UTF-8"),
+                                      bytes(st.secrets["USERNAME_KEY"], "UTF-8"))):
+                    st.error("Username/Password is incorrect.")
+                    return False
+                else:
+                    try:
+                        st.session_state["login"] = True
+                    except Exception:
+                        pass
+                    placeholder.empty()
+                    return True
+
+
 
 if __name__ == "__main__":
-    main_streamlit()
+    st.set_page_config(layout="wide")
+    login = main_login()
+    if login:
+        main_streamlit()

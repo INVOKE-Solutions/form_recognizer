@@ -3,6 +3,8 @@ from streamlitui.fr_ui import sidebar, parse_button, display_df
 from streamlitui.utils import display_image_cached
 import pyodbc
 import pandas as pd
+import pytz
+import datetime
 import os, sys
 sys.path.append(os.path.join(os.path.dirname(sys.path[0]), "main_project"))
 from main_project.main import recognize_this
@@ -71,7 +73,7 @@ def main_streamlit():
                             doc_path=doc.getvalue()
                         )
                         st.session_state["parseInfo"].append(parseInfo)
-                    status_message.success("Parsing complete. Click Data Parsed tab.")
+                    status_message.success("Parsing complete. Click Save Document to save to database.")
 
                 except KeyError:
                     status_message.error("You are not authorized to perform this action")
@@ -102,6 +104,7 @@ def main_streamlit():
                         pdf = pdf.replace(["None", "none", "", "False"], np.NAN)
                         st.session_state[f"pdf{idx}"] = pdf
 
+
         # Saving extracted document data to database
         if st.session_state.get("parse_submitbutton", False):
             for idx in range(len(uploaded_pdf)):
@@ -128,11 +131,18 @@ def main_streamlit():
                     df_view = view_df()
                     st.subheader("Invoice database")
                     st.dataframe(df_view)
+
+                    timezone = pytz.timezone('Asia/Kuala_Lumpur')
+                    current_time = datetime.datetime.now(timezone)
+                    time_string = current_time.strftime('%Y-%m-%d %H:%M:%S')
+                    
+                    st.download_button(label="Download as CSV", data=df_view.to_csv().encode('utf-8'), 
+                                    file_name=f"invoice_database_{time_string}.csv", 
+                                    mime='text/csv')
                 except Exception as viewdfError:
                     st.error(f"ViewDfError: {viewdfError}")
 
-        else:
-            status_message.warning("No PDF uploaded.")
+        
 
             
 

@@ -7,7 +7,7 @@ import pytz
 import datetime
 import os, sys
 from hmac import compare_digest
-from hashlib import sha256
+from hashlib import sha512
 from time import sleep
 
 sys.path.append(os.path.join(os.path.dirname(sys.path[0]), "main_project"))
@@ -155,7 +155,7 @@ def main_login():
             password = st.text_input("Password", placeholder="Password", type="password")
             login_button = st.form_submit_button("Login")
 
-            st.session_state["password"] = sha256(bytes(password, "UTF-8")).hexdigest()
+            st.session_state["password"] = sha512(bytes(password, "UTF-8")).hexdigest()
             del password
 
             if login_button:
@@ -164,11 +164,7 @@ def main_login():
                     st.error("Password is incorrect.")
                     return False
                 else:
-                    try:
-                        st.session_state["login"] = True
-                    except Exception:
-                        pass
-                    placeholder.empty()
+                     placeholder.empty()
                     return True
 
 

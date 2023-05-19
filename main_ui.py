@@ -164,7 +164,7 @@ def main_login():
                     st.error("Password is incorrect.")
                     return False
                 else:
-                     placeholder.empty()
+                    placeholder.empty()
                     return True
 
 

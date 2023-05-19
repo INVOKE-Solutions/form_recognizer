@@ -145,11 +145,13 @@ def main_streamlit():
                     st.error(f"ViewDfError: {viewdfError}")
 
 def main_login():
-    if st.session_state.get("login", False):
+    if (compare_digest(bytes(st.session_state.get("password", ""), "UTF-8"),
+                       bytes(st.secrets["LOGIN_KEY"], "UTF-8"))):
         return True
     _, col, _ = st.columns([4, 3, 4])
     with col:
         placeholder = st.empty()
+        status_login = st.empty()
         with placeholder.form("login"):
             st.markdown("#### Login")
             password = st.text_input("Password", placeholder="Password", type="password")
@@ -161,12 +163,13 @@ def main_login():
             if login_button:
                 if not (compare_digest(bytes(st.session_state.get("password", ""), "UTF-8"),
                                        bytes(st.secrets["LOGIN_KEY"], "UTF-8"))):
-                    st.error("Password is incorrect.")
+                    status_login.error("Password is incorrect.")
                     return False
                 else:
+                    with st.spinner("Logging in"):
+                        sleep(1)
                     placeholder.empty()
                     return True
-
 
 
 if __name__ == "__main__":

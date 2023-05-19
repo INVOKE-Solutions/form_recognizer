@@ -152,7 +152,6 @@ def main_login():
         placeholder = st.empty()
         with placeholder.form("login"):
             st.markdown("#### Login")
-            email = st.text_input("Username", placeholder="username")
             password = st.text_input("Password", placeholder="Password", type="password")
             login_button = st.form_submit_button("Login")
 
@@ -161,10 +160,8 @@ def main_login():
 
             if login_button:
                 if not (compare_digest(bytes(st.session_state.get("password", ""), "UTF-8"),
-                                       bytes(st.secrets["LOGIN_KEY"], "UTF-8"))
-                    or compare_digest(bytes(st.session_state.get("username", ""), "UTF-8"),
-                                      bytes(st.secrets["USERNAME_KEY"], "UTF-8"))):
-                    st.error("Username/Password is incorrect.")
+                                       bytes(st.secrets["LOGIN_KEY"], "UTF-8"))):
+                    st.error("Password is incorrect.")
                     return False
                 else:
                     try:

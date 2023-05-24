@@ -108,7 +108,7 @@ def main_streamlit():
                         """
                         ⚠ Attention
                         1. If the Value shows None, please do not edit it \
-                        unless you found the date value in the invoice. 
+                        unless you found the particular value in the invoice. 
                         2. Please ensure that there is no symbol or character at InvoiceTotal value.
                         
                         """)

@@ -17,11 +17,10 @@ import numpy as np
 
 def main_streamlit():
     # Force UI to use widemode
-    st.title("INVOICE PARSER")
+    st.title("Invoice Parser")
 
     # SETUP TAB & SIDEBAR
     uploaded_pdf = sidebar()
-    st.header("Please review and update(if any) the extracted information before publish")
     status_message = st.empty()
     tab1, tab2 = st.tabs(["Input Data", "View Database"])
 
@@ -91,6 +90,9 @@ def main_streamlit():
         if parseInfo and truncated_names:
             with col2:
                 parsesubmitbutton = parse_submitbutton()
+                status_message.warning("""
+                        Check the information extracted in the table. 
+                        You can edit the value if it is incorrect. """)
 
             for idx, data in enumerate(parseInfo):
                 with data_elements[idx][0]:
@@ -102,6 +104,14 @@ def main_streamlit():
                             num_rows="dynamic",
                             use_container_width=True
                         )
+                        st.warning(
+                        """
+                        ⚠ Attention
+                        1. If the Value shows None, please do not edit it \
+                        unless you found the date value in the invoice. 
+                        2. Please ensure that there is no symbol or character at InvoiceTotal value.
+                        
+                        """)
                         pdf = pd.DataFrame(data_table)
                         pdf = pdf.replace(["None", "none", "", "False"], np.NAN)
                         st.session_state[f"pdf{idx}"] = pdf

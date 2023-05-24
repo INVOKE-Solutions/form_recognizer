@@ -98,23 +98,29 @@ def main_streamlit():
                 with data_elements[idx][0]:
                     with data_elements[idx][2]:
                         st.subheader("Invoice extracted details")
-                        data_table = st.experimental_data_editor(
-                            display_df(parseInfo[idx][0]),
-                            key=f"editable_df{idx}",
-                            num_rows="dynamic",
-                            use_container_width=True
-                        )
-                        st.warning(
-                        """
-                        ⚠ Attention
-                        1. If the Value shows None, please do not edit it \
-                        unless you found the particular value in the invoice. 
-                        2. Please ensure that there is no symbol or character at InvoiceTotal value.
+                        try:
+                            data_table = st.experimental_data_editor(
+                                display_df(parseInfo[idx][0]),
+                                key=f"editable_df{idx}",
+                                num_rows="dynamic",
+                                use_container_width=True
+                            )
                         
-                        """)
-                        pdf = pd.DataFrame(data_table)
-                        pdf = pdf.replace(["None", "none", "", "False"], np.NAN)
-                        st.session_state[f"pdf{idx}"] = pdf
+                            st.warning(
+                            """
+                            ⚠ Attention
+                            1. If the Value shows None, please do not edit it \
+                            unless you found the particular value in the invoice. 
+                            2. Please ensure that there is no symbol or character at InvoiceTotal value.
+                            
+                            """)
+                            pdf = pd.DataFrame(data_table)
+                            pdf = pdf.replace(["None", "none", "", "False"], np.NAN)
+                            st.session_state[f"pdf{idx}"] = pdf
+
+                        except TypeError:
+                            st.warning("No information extracted.")
+                            st.error("Document is not an INVOICE format.")
 
 
         # Saving extracted document data to database

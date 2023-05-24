@@ -148,6 +148,7 @@ def main_login():
     if (compare_digest(bytes(st.session_state.get("password", ""), "UTF-8"),
                        bytes(st.secrets["LOGIN_KEY"], "UTF-8"))):
         return True
+
     _, col, _ = st.columns([4, 3, 4])
     with col:
         placeholder = st.empty()

@@ -62,12 +62,12 @@ def confidence_format(df):
             if (hasAlphaNum(params.data.Value)) {
                 return {
                     'fontWeight': 'bold',
-                    'backgroundColor': negative_color,
+                    'backgroundColor': positive_color,
                 }
             } else {
                 return {
                     'fontWeight': 'bold',
-                    'backgroundColor': positive_color,
+                    'backgroundColor': negative_color,
                 }
             }
         };

@@ -23,6 +23,10 @@ def display_image_cached(file:st.runtime.uploaded_file_manager.UploadedFile):
     return images
 
 def confidence_format(df):
+    if df.iloc[5, 1]:
+        df.iloc[5, 2] = 1.0
+    else:
+        df.iloc[5, 2] = 0.0
     gb = GridOptionsBuilder.from_dataframe(df)
 
     cellsytle_jscode = JsCode("""

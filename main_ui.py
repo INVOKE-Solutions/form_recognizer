@@ -97,10 +97,6 @@ def main_streamlit():
                     with data_elements[idx][2]:
                         st.subheader("Invoice extracted details")
                         data_table = confidence_format(pd.DataFrame(display_df(parseInfo[idx][0])))
-
-                        if data_table.iloc[5, 1]:
-                            data_table.iloc[5, 2] = 1.0
-
                         pdf = pd.DataFrame(data_table)
                         pdf = pdf.replace(["None", "none", "", "False"], np.NAN)
                         st.session_state[f"pdf{idx}"] = pdf

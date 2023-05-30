@@ -93,14 +93,29 @@ def main_streamlit():
                 parsesubmitbutton = parse_submitbutton()
 
             for idx, data in enumerate(parseInfo):
+                # parseInfo[idx][1:]
                 with data_elements[idx][0]:
                     with data_elements[idx][2]:
                         st.subheader("Invoice extracted details")
+                        st.write("Basic Information")
                         data_table = confidence_format(pd.DataFrame(display_df(parseInfo[idx][0])))
+
                         pdf = pd.DataFrame(data_table)
                         pdf = pdf.replace(["None", "none", "", "False"], np.NAN)
                         st.session_state[f"pdf{idx}"] = pdf
 
+                        for table in parseInfo[idx][1:]:
+                            table_df = pd.DataFrame(table).dropna()
+                            description_df = table_df[table_df["Attribute"] == "Description"].reset_index(drop=True)
+                            amount_df = table_df[table_df["Attribute"] == "Amount"].reset_index(drop=True)
+                            combined_confidence = amount_df["Conf"].astype(float)/2 + description_df["Conf"].astype(float)/2
+
+                            table_df = pd.DataFrame().assign(
+                                **{"Description": description_df["Value"],
+                                 "Amount": amount_df["Value"],
+                                 "Conf": combined_confidence}
+                            )
+                            st.dataframe(confidence_format(table_df), use_container_width=True)
 
         # Saving extracted document data to database
         if st.session_state.get("parse_submitbutton", False):

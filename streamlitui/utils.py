@@ -1,7 +1,7 @@
 import streamlit as st
 import base64
 from pdf2image import convert_from_bytes
-from st_aggrid import AgGrid, GridOptionsBuilder, JsCode
+from st_aggrid import AgGrid, GridOptionsBuilder, JsCode, ColumnsAutoSizeMode
 
 def displaypdf(file: st.runtime.uploaded_file_manager.UploadedFile):
     """
@@ -77,7 +77,11 @@ def confidence_format(df):
     gb.configure_columns("Value", editable=True)
     grid_options = gb.build()
     grid_options['getRowStyle'] = jscode
-    grid_return = AgGrid(df, gridOptions=grid_options, allow_unsafe_jscode=True)
-    print(grid_options.keys())
+    grid_return = AgGrid(
+        df, 
+        gridOptions=grid_options, 
+        columns_auto_size_mode=ColumnsAutoSizeMode.FIT_CONTENTS, 
+        allow_unsafe_jscode=True
+    )
 
     return grid_return

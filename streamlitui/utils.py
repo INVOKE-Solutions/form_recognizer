@@ -46,7 +46,7 @@ def confidence_format(df):
             };
         };
 
-        try {
+        //try {
             if (params.data.Attribute != 'InvoiceType') {
                 if (params.data.Conf >= 0.5) {
                     return {
@@ -72,12 +72,12 @@ def confidence_format(df):
                     }
                 }
             };
-        } catch(err) {
+        //} catch(err) {
             return {
                     'fontWeight': 'bold',
                     'backgroundColor': '#0000FF',
-            }
-        }
+            };
+        //}
     }
     """)
     gb.configure_columns(df,cellStyle=cellsytle_jscode, editable=True)

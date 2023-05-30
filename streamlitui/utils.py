@@ -39,6 +39,21 @@ def confidence_format(df):
                     'backgroundColor': '#9A0E2A'                    
                 }
             };
+            if (params.data.Attribute == "InvoiceType") {
+                if (params.data.Value != '') {
+                    return {
+                        'color': '#FFFFFF',
+                        'backgroundColor': '#9A0E2A',
+                    }
+                } else {
+                    return {
+                        'color': '#FFFFFF',
+                        'backgroundColor': '#40BF60'
+                    }
+                }
+            }
+                
+
         } catch(err) {
             return {
                     'color': '#000000',

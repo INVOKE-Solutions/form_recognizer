@@ -27,40 +27,57 @@ def confidence_format(df):
 
     cellsytle_jscode = JsCode("""
     function(params) {
-        try {
-            if (params.data.Conf >= 0.5) {
-                return {
-                    'color': '#FFFFFF',
-                    'backgroundColor': '#40BF60',
+        var negative_color = '#D20E35';
+        var positive_color = '#40BF60';
+
+        function hasAlphaNum (str) {
+            var code, i, len;
+            
+            for (i = 0, len = str.length; i < len; i++) {
+                if (len == 0) {
+                    return false;
+                };
+
+                code = str.charCodeAt(i);
+                if ((code > 47 && code < 58) || (code > 64 && code < 91) || (code > 96 && code < 123)) {
+                    return true;
                 }
-            } else {
-                return {
-                    'color': '#FFFFFF',
-                    'backgroundColor': '#9A0E2A'                    
-                }
+            return false;
             };
-            if (params.data.Attribute == "InvoiceType") {
-                if (params.data.Value != '') {
+        };
+
+        try {
+            if (params.data.Attribute != 'InvoiceType') {
+                if (params.data.Conf >= 0.5) {
                     return {
-                        'color': '#FFFFFF',
-                        'backgroundColor': '#9A0E2A',
+                        'fontWeight': 'bold',
+                        'backgroundColor': positive_color,
                     }
                 } else {
                     return {
-                        'color': '#FFFFFF',
-                        'backgroundColor': '#40BF60'
+                        'fontWeight': 'bold',
+                        'backgroundColor': negative_color
                     }
                 }
-            }
-                
-
+            } else {
+                if (hasAlphaNum(params.data.Value)) {
+                    return {
+                        'fontWeight': 'bold',
+                        'backgroundColor': negative_color,
+                    }
+                } else {
+                    return {
+                        'fontWeight': 'bold',
+                        'backgroundColor': positive_color,
+                    }
+                }
+            };
         } catch(err) {
             return {
-                    'color': '#000000',
-                    'backgroundColor': '#0000FF'                    
-                }
+                    'fontWeight': 'bold',
+                    'backgroundColor': '#0000FF',
+            }
         }
-
     }
     """)
     gb.configure_columns(df,cellStyle=cellsytle_jscode, editable=True)

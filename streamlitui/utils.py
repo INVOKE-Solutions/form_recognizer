@@ -73,7 +73,8 @@ def confidence_format(df):
         };
     }
     """)
-    gb.configure_columns(df,cellStyle=cellsytle_jscode, editable=True)
+    gb.configure_columns(df, cellStyle=cellsytle_jscode)
+    gb.configure_columns("value", editable=True)
     grid_options = gb.build()
     grid_return = AgGrid(df, gridOptions=grid_options, allow_unsafe_jscode=True)
 

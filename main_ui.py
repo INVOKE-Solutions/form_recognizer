@@ -96,16 +96,7 @@ def main_streamlit():
                 with data_elements[idx][0]:
                     with data_elements[idx][2]:
                         st.subheader("Invoice extracted details")
-                        data_table = st.experimental_data_editor(
-                            display_df(parseInfo[idx][0]),
-                            key=f"editable_df{idx}",
-                            num_rows="dynamic",
-                            use_container_width=True
-                        )
-                        confidence_format(pd.DataFrame(data_table))
-                        # st.dataframe(confidence_format(pd.DataFrame(data_table)), use_container_width=True)
-                        # display_table = data_table.style.apply(confidence_format, axis=1)
-                        # st.dataframe(display_table)
+                        data_table = confidence_format(pd.DataFrame(display_df(parseInfo[idx][0])))
                         pdf = pd.DataFrame(data_table)
                         pdf = pdf.replace(["None", "none", "", "False"], np.NAN)
                         st.session_state[f"pdf{idx}"] = pdf

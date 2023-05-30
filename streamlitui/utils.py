@@ -46,38 +46,31 @@ def confidence_format(df):
             };
         };
 
-        //try {
-            if (params.data.Attribute != 'InvoiceType') {
-                if (params.data.Conf >= 0.5) {
-                    return {
-                        'fontWeight': 'bold',
-                        'backgroundColor': positive_color,
-                    }
-                } else {
-                    return {
-                        'fontWeight': 'bold',
-                        'backgroundColor': negative_color
-                    }
+        if (params.data.Attribute != 'InvoiceType') {
+            if (params.data.Conf >= 0.5) {
+                return {
+                    'fontWeight': 'bold',
+                    'backgroundColor': positive_color,
                 }
             } else {
-                if (hasAlphaNum(params.data.Value)) {
-                    return {
-                        'fontWeight': 'bold',
-                        'backgroundColor': negative_color,
-                    }
-                } else {
-                    return {
-                        'fontWeight': 'bold',
-                        'backgroundColor': positive_color,
-                    }
-                }
-            };
-        //} catch(err) {
-            return {
+                return {
                     'fontWeight': 'bold',
-                    'backgroundColor': '#0000FF',
-            };
-        //}
+                    'backgroundColor': negative_color
+                }
+            }
+        } else {
+            if (hasAlphaNum(params.data.Value)) {
+                return {
+                    'fontWeight': 'bold',
+                    'backgroundColor': negative_color,
+                }
+            } else {
+                return {
+                    'fontWeight': 'bold',
+                    'backgroundColor': positive_color,
+                }
+            }
+        };
     }
     """)
     gb.configure_columns(df,cellStyle=cellsytle_jscode, editable=True)

@@ -28,7 +28,7 @@ def confidence_format(df):
     cellsytle_jscode = JsCode("""
     function(params) {
         try {
-            if (params.value.Conf > 0.5) {
+            if (params.data.Conf >= 0.5) {
                 return {
                     'color': '#FFFFFF',
                     'backgroundColor': '#40BF60',
@@ -39,14 +39,18 @@ def confidence_format(df):
                     'backgroundColor': '#9A0E2A'                    
                 }
             };
-        } catch(err) {}
+        } catch(err) {
+            return {
+                    'color': '#000000',
+                    'backgroundColor': '#0000FF'                    
+                }
+        }
 
     }
     """)
+    gb.configure_columns(df,cellStyle=cellsytle_jscode, editable=True)
     grid_options = gb.build()
-    grid_options['getRowStyle'] = cellsytle_jscode
-    gb.configure_columns(field='conf', header_name='Conf')
-    gb.configure_columns(df, editable=True)
+    # grid_options['getRowStyle'] = cellsytle_jscode
     grid_return = AgGrid(df, gridOptions=grid_options, allow_unsafe_jscode=True)
 
     return grid_return

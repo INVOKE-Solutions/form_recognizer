@@ -32,11 +32,11 @@ def confidence_format(df):
 
         function hasAlphaNum (str) {
             var code, i, len;
+            if (!str) {
+                return false;
+            };
             
             for (i = 0, len = str.length; i < len; i++) {
-                if (len == 0) {
-                    return false;
-                };
 
                 code = str.charCodeAt(i);
                 if ((code > 47 && code < 58) || (code > 64 && code < 91) || (code > 96 && code < 123)) {

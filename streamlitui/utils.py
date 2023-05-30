@@ -27,8 +27,8 @@ def confidence_format(df):
 
     cellsytle_jscode = JsCode("""
     function(params) {
-        var negative_color = '#D20E35';
-        var positive_color = '#40BF60';
+        var positive_color = '#009E73';
+        var negative_color = '#D55E00';
 
         function hasAlphaNum (str) {
             var code, i, len;

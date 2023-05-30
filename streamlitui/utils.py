@@ -81,16 +81,3 @@ def confidence_format(df):
     print(grid_options.keys())
 
     return grid_return
-
-# def row_format(row):
-#     value = row["Conf"]
-#     try:
-#         value = float(value)
-#     except TypeError:
-#         pass
-
-#     if value >= 0.5:
-#         color = "#40BF60"
-#     else:
-#         color = "#9A0E2A"
-#     return [f"background-color: {color}; color: #000000" for _ in row]

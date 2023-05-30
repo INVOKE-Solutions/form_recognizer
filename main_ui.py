@@ -1,6 +1,6 @@
 import streamlit as st
 from streamlitui.fr_ui import sidebar, parse_button, display_df
-from streamlitui.utils import display_image_cached
+from streamlitui.utils import display_image_cached, confidence_format
 import pyodbc
 import pandas as pd
 import pytz
@@ -102,6 +102,10 @@ def main_streamlit():
                             num_rows="dynamic",
                             use_container_width=True
                         )
+                        confidence_format(pd.DataFrame(data_table))
+                        # st.dataframe(confidence_format(pd.DataFrame(data_table)), use_container_width=True)
+                        # display_table = data_table.style.apply(confidence_format, axis=1)
+                        # st.dataframe(display_table)
                         pdf = pd.DataFrame(data_table)
                         pdf = pdf.replace(["None", "none", "", "False"], np.NAN)
                         st.session_state[f"pdf{idx}"] = pdf

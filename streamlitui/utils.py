@@ -1,8 +1,7 @@
 import streamlit as st
 import base64
 from pdf2image import convert_from_bytes
-from os import makedirs
-from os.path import exists
+from st_aggrid import AgGrid, GridOptionsBuilder, JsCode
 
 def displaypdf(file: st.runtime.uploaded_file_manager.UploadedFile):
     """
@@ -22,3 +21,45 @@ def display_pdf_to_image(file:st.runtime.uploaded_file_manager.UploadedFile):
 def display_image_cached(file:st.runtime.uploaded_file_manager.UploadedFile):
     images = convert_from_bytes(file.read())
     return images
+
+def confidence_format(df):
+    gb = GridOptionsBuilder.from_dataframe(df)
+
+    cellsytle_jscode = JsCode("""
+    function(params) {
+        try {
+            if (params.value.Conf > 0.5) {
+                return {
+                    'color': '#FFFFFF',
+                    'backgroundColor': '#40BF60',
+                }
+            } else {
+                return {
+                    'color': '#FFFFFF',
+                    'backgroundColor': '#9A0E2A'                    
+                }
+            };
+        } catch(err) {}
+
+    }
+    """)
+    grid_options = gb.build()
+    grid_options['getRowStyle'] = cellsytle_jscode
+    gb.configure_columns(field='conf', header_name='Conf')
+    gb.configure_columns(df, editable=True)
+    grid_return = AgGrid(df, gridOptions=grid_options, allow_unsafe_jscode=True)
+
+    return grid_return
+
+# def row_format(row):
+#     value = row["Conf"]
+#     try:
+#         value = float(value)
+#     except TypeError:
+#         pass
+
+#     if value >= 0.5:
+#         color = "#40BF60"
+#     else:
+#         color = "#9A0E2A"
+#     return [f"background-color: {color}; color: #000000" for _ in row]

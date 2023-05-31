@@ -101,12 +101,15 @@ def main_streamlit():
                         st.subheader("Invoice extracted details")
                         st.write("Basic Information")
                         try:
+                            data_table = pd.DataFrame(display_df(parseInfo[idx][0]))
+                            st.download_button(
+                                label="Download basic information as CSV",
+                                data=df_to_csv(data_table),
+                                file_name="basic_info_table.csv",
+                                mime="text/csv"
+                            )
                             data_table = confidence_format(
-                                pd.DataFrame(
-                                    display_df(
-                                        parseInfo[idx][0]
-                                    )
-                                ),
+                                data_table,
                                 scale_mode="fit_view",
                                 key="basic_table",
                                 edit_cols="Value"
@@ -136,8 +139,8 @@ def main_streamlit():
                             combined_conf = (amount_df["Conf"].astype(float) + description_df["Conf"].astype(float)) / 2
 
                             table_df = pd.DataFrame().assign(
-                                **{"Description": description_df["Value"],
-                                 "Amount": amount_df["Value"],
+                                **{"Attribute": description_df["Value"],
+                                 "Value": amount_df["Value"],
                                  "Conf": combined_conf.round(3)}
                             )
                             st.download_button(

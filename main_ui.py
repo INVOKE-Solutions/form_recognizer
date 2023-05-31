@@ -101,12 +101,15 @@ def main_streamlit():
                         st.subheader("Invoice extracted details")
                         st.write("Basic Information")
                         try:
+                            data table = pd.DataFrame(display_df(parseInfo[idx][0]))
+                            st.download_button(
+                                label="Download item table as CSV",
+                                data=df_to_csv(data_table),
+                                file_name="item_table.csv",
+                                mime="text/csv"
+                            )
                             data_table = confidence_format(
-                                pd.DataFrame(
-                                    display_df(
-                                        parseInfo[idx][0]
-                                    )
-                                ),
+                                data_table,
                                 scale_mode="fit_view",
                                 key="basic_table",
                                 edit_cols="Value"

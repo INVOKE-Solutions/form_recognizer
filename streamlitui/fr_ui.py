@@ -27,7 +27,7 @@ def parse_button():
 
 def display_df(data:Dict):
     df = pd.DataFrame(data)
-    df = df[df['Attribute'].isin(["InvoiceId", "VendorName", "InvoiceDate", "InvoiceTotal", "Currency"])]
+    df = df[df['Attribute'].isin(["InvoiceId", "VendorName", "InvoiceDate", "InvoiceTotal", "Currency", "InvoiceCategory"])]
     attribute = df["Attribute"].to_list()
     col = ["InvoiceId", "VendorName", "InvoiceDate", "InvoiceTotal", "Currency", "InvoiceCategory"]
     for i in col:

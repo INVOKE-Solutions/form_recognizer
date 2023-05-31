@@ -6,7 +6,7 @@ def sidebar():
     sidebar = st.sidebar
     sidebar.write("Invoice Parser")
     uploaded_pdf = sidebar.file_uploader(
-        label="Upload your PDF here", 
+        label="Upload your PDF here (size < 4 MB)", 
         type="pdf", 
         accept_multiple_files=True, 
         key="pdf_upload"

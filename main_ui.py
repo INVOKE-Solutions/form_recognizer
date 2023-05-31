@@ -17,11 +17,10 @@ import numpy as np
 
 def main_streamlit():
     # Force UI to use widemode
-    st.title("INVOICE PARSER")
+    st.title("Invoice Parser")
 
     # SETUP TAB & SIDEBAR
     uploaded_pdf = sidebar()
-    st.header("Please review and update(if any) the extracted information before publish")
     status_message = st.empty()
     tab1, tab2 = st.tabs(["Input Data", "View Database"])
 
@@ -91,6 +90,9 @@ def main_streamlit():
         if parseInfo and truncated_names:
             with col2:
                 parsesubmitbutton = parse_submitbutton()
+                status_message.warning("""
+                        Check the information extracted in the table. 
+                        You can edit the value if it is incorrect. """)
 
             for idx, data in enumerate(parseInfo):
                 # parseInfo[idx][1:]
@@ -98,21 +100,32 @@ def main_streamlit():
                     with data_elements[idx][2]:
                         st.subheader("Invoice extracted details")
                         st.write("Basic Information")
+                        try:
+                            data_table = confidence_format(
+                                pd.DataFrame(
+                                    display_df(
+                                        parseInfo[idx][0]
+                                    )
+                                ),
+                                scale_mode="fit_view",
+                                key="basic_table",
+                                edit_cols="Value"
+                            )
+                            st.warning(
+                            """
+                            ⚠ Attention
+                            1. If the Value shows None, please do not edit it \
+                            unless you found the particular value in the invoice. 
+                            2. Please ensure that there is no symbol or character at InvoiceTotal value.
+                            
+                            """)
+                            pdf = pd.DataFrame(data_table)
+                            pdf = pdf.replace(["None", "none", "", "False"], np.NAN)
+                            st.session_state[f"pdf{idx}"] = pdf
 
-                        data_table = confidence_format(
-                            pd.DataFrame(
-                                display_df(
-                                    parseInfo[idx][0]
-                                )
-                            ),
-                            scale_mode="fit_view",
-                            key="basic_table",
-                            edit_cols="Value"
-                        )
-
-                        pdf = pd.DataFrame(data_table)
-                        pdf = pdf.replace(["None", "none", "", "False"], np.NAN)
-                        st.session_state[f"pdf{idx}"] = pdf
+                        except TypeError:
+                            st.warning("No information extracted.")
+                            st.error("Document is not an INVOICE format.")
 
                         st.write("Items Table")
                         for table in parseInfo[idx][1:]:

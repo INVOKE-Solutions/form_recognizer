@@ -100,4 +100,4 @@ def confidence_format(df, scale_mode, key, edit_cols=None):
 
 @st.cache_data(ttl=60*60)
 def df_to_csv(df):
-    return df.to_csv().encode("utf-8")
+    return df_to_csv().encode("utf-8")

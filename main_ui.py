@@ -103,9 +103,9 @@ def main_streamlit():
                         try:
                             data_table = pd.DataFrame(display_df(parseInfo[idx][0]))
                             st.download_button(
-                                label="Download item table as CSV",
+                                label="Download basic information as CSV",
                                 data=df_to_csv(data_table),
-                                file_name="item_table.csv",
+                                file_name="basic_info_table.csv",
                                 mime="text/csv"
                             )
                             data_table = confidence_format(

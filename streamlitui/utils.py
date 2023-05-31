@@ -22,7 +22,15 @@ def display_image_cached(file:st.runtime.uploaded_file_manager.UploadedFile):
     images = convert_from_bytes(file.read())
     return images
 
-def confidence_format(df):
+def confidence_format(df, scale_mode, key, edit_cols=None):
+    match scale_mode:
+        case "fit_contents":
+            autosize_option = ColumnsAutoSizeMode.FIT_CONTENTS
+        case "fit_view":
+            autosize_option = ColumnsAutoSizeMode.FIT_ALL_COLUMNS_TO_VIEW
+        case _:
+            autosize_option = ColumnsAutoSizeMode.NO_AUTOSIZE
+
     gb = GridOptionsBuilder.from_dataframe(df)
 
     jscode = JsCode("""
@@ -74,14 +82,22 @@ def confidence_format(df):
     }
     """)
 
-    gb.configure_columns("Value", editable=True)
+    if edit_cols:
+        gb.configure_columns(edit_cols, editable=True)
+
     grid_options = gb.build()
     grid_options['getRowStyle'] = jscode
-    grid_return = AgGrid(
+    return_grid = AgGrid(
         df, 
-        gridOptions=grid_options, 
-        columns_auto_size_mode=ColumnsAutoSizeMode.FIT_CONTENTS, 
-        allow_unsafe_jscode=True
+        gridOptions=grid_options,
+        fit_columns_on_grid_load=True,
+        columns_auto_size_mode=autosize_option, 
+        allow_unsafe_jscode=True,
+        theme="streamlit",
+        key=key
     )
+    return return_grid["data"]
 
-    return grid_return
+@st.cache_data(ttl=60*60)
+def df_to_csv(df):
+    return df.to_csv().encode("utf-8")

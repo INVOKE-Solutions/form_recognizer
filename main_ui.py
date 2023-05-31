@@ -1,6 +1,6 @@
 import streamlit as st
 from streamlitui.fr_ui import sidebar, parse_button, display_df
-from streamlitui.utils import display_image_cached, confidence_format
+from streamlitui.utils import display_image_cached, confidence_format, df_to_csv
 import pyodbc
 import pandas as pd
 import pytz
@@ -98,24 +98,47 @@ def main_streamlit():
                     with data_elements[idx][2]:
                         st.subheader("Invoice extracted details")
                         st.write("Basic Information")
-                        data_table = confidence_format(pd.DataFrame(display_df(parseInfo[idx][0])))
+
+                        data_table = confidence_format(
+                            pd.DataFrame(
+                                display_df(
+                                    parseInfo[idx][0]
+                                )
+                            ),
+                            scale_mode="fit_view",
+                            key="basic_table",
+                            edit_cols="Value"
+                        )
 
                         pdf = pd.DataFrame(data_table)
                         pdf = pdf.replace(["None", "none", "", "False"], np.NAN)
                         st.session_state[f"pdf{idx}"] = pdf
 
+                        st.write("Items Table")
                         for table in parseInfo[idx][1:]:
                             table_df = pd.DataFrame(table).dropna()
+
                             description_df = table_df[table_df["Attribute"] == "Description"].reset_index(drop=True)
                             amount_df = table_df[table_df["Attribute"] == "Amount"].reset_index(drop=True)
-                            combined_confidence = amount_df["Conf"].astype(float)/2 + description_df["Conf"].astype(float)/2
+                            combined_conf = (amount_df["Conf"].astype(float) + description_df["Conf"].astype(float)) / 2
 
                             table_df = pd.DataFrame().assign(
                                 **{"Description": description_df["Value"],
                                  "Amount": amount_df["Value"],
-                                 "Conf": combined_confidence}
+                                 "Conf": combined_conf.round(3)}
                             )
-                            st.dataframe(confidence_format(table_df), use_container_width=True)
+                            st.download_button(
+                                label="Download item table as CSV",
+                                data=df_to_csv(table_df),
+                                file_name="item_table.csv",
+                                mime="text/csv"
+                            )
+                            confidence_format(
+                                table_df,
+                                scale_mode="fit_contents",
+                                key="item_table",
+                                edit_cols=["Description", "Amount"]
+                            )
 
         # Saving extracted document data to database
         if st.session_state.get("parse_submitbutton", False):

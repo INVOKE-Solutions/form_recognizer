@@ -149,7 +149,7 @@ def display_basic_info(invoice_result:azure.ai.formrecognizer._models.AnalyzeRes
             "ShippingAddress", 
             "ShippingAddressRecipient", 
         ]
-        infoDict = {"Attribute":[], "Value":[], "Conf":[]}
+        infoDict = {"Attribute":["InvoiceCategory"], "Value":[np.NAN], "Conf":[np.NAN]}
 
         for content in get_this:
             info = get_basic_info(invoice_result, content)

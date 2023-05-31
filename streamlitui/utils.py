@@ -52,7 +52,7 @@ def confidence_format(df, scale_mode, key, edit_cols=None):
             return false;
         };
 
-        if (params.data.Conf >= 0.5 && hasAlphaNum(params.data.Value)) {
+        if (params.data.Conf >= 0.5 || hasAlphaNum(params.data.Value)) {
             return {
                 'fontWeight': 'bold',
                 'backgroundColor': positive_color,

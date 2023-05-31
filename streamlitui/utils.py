@@ -23,13 +23,12 @@ def display_image_cached(file:st.runtime.uploaded_file_manager.UploadedFile):
     return images
 
 def confidence_format(df, scale_mode, key, edit_cols=None):
-    match scale_mode:
-        case "fit_contents":
-            autosize_option = ColumnsAutoSizeMode.FIT_CONTENTS
-        case "fit_view":
-            autosize_option = ColumnsAutoSizeMode.FIT_ALL_COLUMNS_TO_VIEW
-        case _:
-            autosize_option = ColumnsAutoSizeMode.NO_AUTOSIZE
+    if scale_mode == "fit_contents":
+        autosize_option = ColumnsAutoSizeMode.FIT_CONTENTS
+    elif scale_mode == "fit_view":
+        autosize_option = ColumnsAutoSizeMode.FIT_ALL_COLUMNS_TO_VIEW
+    else:
+        autosize_option = ColumnsAutoSizeMode.NO_AUTOSIZE
 
     gb = GridOptionsBuilder.from_dataframe(df)
 

@@ -54,7 +54,7 @@ def confidence_format(df, scale_mode, key, edit_cols=None):
             return false;
         };
 
-        if (params.data.Attribute != 'InvoiceType') {
+        if (params.data.Attribute != 'InvoiceCategory') {
             if (params.data.Conf >= 0.5) {
                 return {
                     'fontWeight': 'bold',

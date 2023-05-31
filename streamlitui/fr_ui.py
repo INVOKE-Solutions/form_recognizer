@@ -29,7 +29,7 @@ def display_df(data:Dict):
     df = pd.DataFrame(data)
     df = df[df['Attribute'].isin(["InvoiceId", "VendorName", "InvoiceDate", "InvoiceTotal", "Currency"])]
     attribute = df["Attribute"].to_list()
-    col = ["InvoiceId", "VendorName", "InvoiceDate", "InvoiceTotal", "Currency", "InvoiceType"]
+    col = ["InvoiceId", "VendorName", "InvoiceDate", "InvoiceTotal", "Currency", "InvoiceCategory"]
     for i in col:
         if i in attribute:
             pass

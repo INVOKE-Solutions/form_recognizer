@@ -136,8 +136,8 @@ def main_streamlit():
                             combined_conf = (amount_df["Conf"].astype(float) + description_df["Conf"].astype(float)) / 2
 
                             table_df = pd.DataFrame().assign(
-                                **{"Description": description_df["Value"],
-                                 "Amount": amount_df["Value"],
+                                **{"Attribute": description_df["Value"],
+                                 "Value": amount_df["Value"],
                                  "Conf": combined_conf.round(3)}
                             )
                             st.download_button(

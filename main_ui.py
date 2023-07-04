@@ -211,6 +211,7 @@ def main_login():
             del password
 
             if login_button:
+                sleep(1)
                 if not (compare_digest(bytes(st.session_state.get("password", ""), "UTF-8"),
                                        bytes(st.secrets["LOGIN_KEY"], "UTF-8"))):
                     status_login.error("Password is incorrect.")

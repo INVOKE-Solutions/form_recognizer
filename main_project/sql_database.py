@@ -18,7 +18,7 @@ def conn_load_sql(df_cleaned):
     engine = create_engine("mssql+pyodbc:///?odbc_connect={}".format(conn_string))
     df = dataframeSetup(df_cleaned)
     # Name of the existing table to append to
-    existing_table = "invoke_dev_database"
+    existing_table = "invoke_invoice_database"
     df.to_sql(existing_table, engine, index=False, if_exists="append")
     engine.dispose()
     return df
@@ -91,7 +91,7 @@ def view_df():
         f"DRIVER={{ODBC Driver 18 for SQL Server}};SERVER={server};DATABASE={database};UID={username};PWD={password}"
     )
     # Define the SQL query to retrieve the data from the table
-    query = "SELECT * FROM invoke_dev_database"
+    query = "SELECT * FROM invoke_invoice_database"
     # Use pandas to read the data from the database into a DataFrame
     df_view = pd.read_sql(query, cnxn)
     return df_view

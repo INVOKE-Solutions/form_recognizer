@@ -91,7 +91,7 @@ def view_df():
         f"DRIVER={{ODBC Driver 18 for SQL Server}};SERVER={server};DATABASE={database};UID={username};PWD={password}"
     )
     # Define the SQL query to retrieve the data from the table
-    query = "SELECT * FROM invoke_invoice_database"
+    query = "SELECT * FROM invoke_dev_database"
     # Use pandas to read the data from the database into a DataFrame
     df_view = pd.read_sql(query, cnxn)
     return df_view

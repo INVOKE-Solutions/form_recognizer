@@ -44,7 +44,6 @@ def confidence_format(df, scale_mode, key, edit_cols=None):
             };
             
             for (i = 0, len = str.length; i < len; i++) {
-
                 code = str.charCodeAt(i);
                 if ((code > 47 && code < 58) || (code > 64 && code < 91) || (code > 96 && code < 123)) {
                     return true;
@@ -53,32 +52,18 @@ def confidence_format(df, scale_mode, key, edit_cols=None):
             return false;
         };
 
-        if (params.data.Attribute != 'InvoiceCategory') {
-            if (params.data.Conf >= 0.5) {
-                return {
-                    'fontWeight': 'bold',
-                    'backgroundColor': positive_color,
-                }
-            } else {
-                return {
-                    'fontWeight': 'bold',
-                    'backgroundColor': negative_color
-                }
-            }
+        if (params.data.Conf >= 0.5 && hasAlphaNum(params.data.Value)) {
+            return {
+                'fontWeight': 'bold',
+                'backgroundColor': positive_color,
+            };
         } else {
-            if (hasAlphaNum(params.data.Value)) {
-                return {
-                    'fontWeight': 'bold',
-                    'backgroundColor': positive_color,
-                }
-            } else {
-                return {
-                    'fontWeight': 'bold',
-                    'backgroundColor': negative_color,
-                }
-            }
+            return {
+                'fontWeight': 'bold',
+                'backgroundColor': negative_color
+            };
         };
-    }
+    };
     """)
 
     if edit_cols:
@@ -99,4 +84,4 @@ def confidence_format(df, scale_mode, key, edit_cols=None):
 
 @st.cache_data(ttl=60*60)
 def df_to_csv(df):
-    return df.to_csv().encode("utf-8")
+    return df.to_csv(index=False).encode("utf-8")

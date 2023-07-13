@@ -12,12 +12,18 @@ from time import sleep
 
 sys.path.append(os.path.join(os.path.dirname(sys.path[0]), "main_project"))
 from main_project.main import recognize_this
-from main_project.sql_database import conn_load_sql, parse_submitbutton, view_df, dataframeSetup
+from main_project.sql_database import (
+    conn_load_sql,
+    parse_submitbutton,
+    view_df,
+    dataframeSetup,
+)
 import numpy as np
+
 
 def main_streamlit():
     # Force UI to use widemode
-    st.title("Invoice Parser")
+    st.title("Invoice Parser (PROD)")
 
     # SETUP TAB & SIDEBAR
     uploaded_pdf = sidebar()
@@ -36,7 +42,7 @@ def main_streamlit():
             for idx, doc in enumerate(uploaded_pdf):
                 filename = doc.name
                 if len(filename) > 40:
-                    filename = filename[:37]+"..."
+                    filename = filename[:37] + "..."
                 st.session_state.get("truncated_names", None).append(filename)
         else:
             status_message.warning("No PDF Uploaded")
@@ -70,18 +76,25 @@ def main_streamlit():
                     st.session_state["parseInfo"] = []
                     for idx, doc in enumerate(uploaded_pdf):
                         parseInfo = recognize_this(
-                            doc_is_url=False, 
-                            doc_path=doc.getvalue()
+                            doc_is_url=False, doc_path=doc.getvalue()
                         )
                         st.session_state["parseInfo"].append(parseInfo)
-                    status_message.success("Parsing complete. Click Save Document to save to database.")
+                    status_message.success(
+                        "Parsing complete. Click Save Document to save to database."
+                    )
 
                 except KeyError:
-                    status_message.error("You are not authorized to perform this action")
+                    status_message.error(
+                        "You are not authorized to perform this action"
+                    )
 
                 except Exception as e:
-                    status_message.error("No invoice information detected in your documents.")
-                    status_message.warning("Your document might not an invoice document.")
+                    status_message.error(
+                        "No invoice information detected in your documents."
+                    )
+                    status_message.warning(
+                        "Your document might not an invoice document."
+                    )
                     raise e
 
         # Displaying parsed results
@@ -90,9 +103,11 @@ def main_streamlit():
         if parseInfo and truncated_names:
             with col2:
                 parsesubmitbutton = parse_submitbutton()
-                status_message.warning("""
+                status_message.warning(
+                    """
                         Check the information extracted in the table. 
-                        You can edit the value if it is incorrect. """)
+                        You can edit the value if it is incorrect. """
+                )
 
             for idx, data in enumerate(parseInfo):
                 # parseInfo[idx][1:]
@@ -106,22 +121,23 @@ def main_streamlit():
                                 label="Download basic information as CSV",
                                 data=df_to_csv(data_table),
                                 file_name="basic_info_table.csv",
-                                mime="text/csv"
+                                mime="text/csv",
                             )
                             data_table = confidence_format(
                                 data_table,
                                 scale_mode="fit_view",
                                 key="basic_table",
-                                edit_cols="Value"
+                                edit_cols="Value",
                             )
                             st.warning(
-                            """
+                                """
                             ⚠ Attention
                             1. If the Value shows None, please do not edit it \
                             unless you found the particular value in the invoice. 
                             2. Please ensure that there is no symbol or character at InvoiceTotal value.
                             
-                            """)
+                            """
+                            )
                             pdf = pd.DataFrame(data_table)
                             pdf = pdf.replace(["None", "none", "", "False"], np.NAN)
                             st.session_state[f"pdf{idx}"] = pdf
@@ -134,68 +150,89 @@ def main_streamlit():
                         for table in parseInfo[idx][1:]:
                             table_df = pd.DataFrame(table).dropna()
 
-                            description_df = table_df[table_df["Attribute"] == "Description"].reset_index(drop=True)
-                            amount_df = table_df[table_df["Attribute"] == "Amount"].reset_index(drop=True)
-                            combined_conf = (amount_df["Conf"].astype(float) + description_df["Conf"].astype(float)) / 2
+                            description_df = table_df[
+                                table_df["Attribute"] == "Description"
+                            ].reset_index(drop=True)
+                            amount_df = table_df[
+                                table_df["Attribute"] == "Amount"
+                            ].reset_index(drop=True)
+                            combined_conf = (
+                                amount_df["Conf"].astype(float)
+                                + description_df["Conf"].astype(float)
+                            ) / 2
 
                             table_df = pd.DataFrame().assign(
-                                **{"Attribute": description_df["Value"],
-                                 "Value": amount_df["Value"],
-                                 "Conf": combined_conf.round(3)}
+                                **{
+                                    "Attribute": description_df["Value"],
+                                    "Value": amount_df["Value"],
+                                    "Conf": combined_conf.round(3),
+                                }
                             )
                             st.download_button(
                                 label="Download item table as CSV",
                                 data=df_to_csv(table_df),
                                 file_name="item_table.csv",
-                                mime="text/csv"
+                                mime="text/csv",
                             )
                             confidence_format(
                                 table_df,
                                 scale_mode="fit_contents",
                                 key="item_table",
-                                edit_cols=["Description", "Amount"]
+                                edit_cols=["Description", "Amount"],
                             )
 
         # Saving extracted document data to database
         if st.session_state.get("parse_submitbutton", False):
             for idx in range(len(uploaded_pdf)):
-                updatedInfo = st.session_state.get(f"pdf{idx}", False) # boolean
+                updatedInfo = st.session_state.get(f"pdf{idx}", False)  # boolean
                 if updatedInfo is not False:
                     # SQL database details
                     try:
                         df = conn_load_sql(updatedInfo)
-                        status_message.success("Load data into database successful. Go to View Database tab to see the database.")
-                    except Exception as e: 
+                        status_message.success(
+                            "Load data into database successful. Go to View Database tab to see the database."
+                        )
+                    except Exception as e:
                         sqlstate = e.args[0]
-                        if '42000' in str(sqlstate):
+                        if "42000" in str(sqlstate):
                             # Handling code for the specific error
-                            st.error("DataTypeError: Please make sure InvoiceTotal in number format.")
-                        elif '23000' in str(sqlstate):
+                            st.error(
+                                "DataTypeError: Please make sure InvoiceTotal in number format."
+                            )
+                        elif "23000" in str(sqlstate):
                             st.error("Invoice number has been used in the database.")
-                        elif '22007' in str(sqlstate):
-                            st.error("DataTypeError: Please make sure invoiceDate in date format.")
+                        elif "22007" in str(sqlstate):
+                            st.error(
+                                "DataTypeError: Please make sure invoiceDate in date format."
+                            )
                         else:
                             st.error(f"Other error: {e}")
-                        
+
             with tab2:
                 try:
                     df_view = view_df()
                     st.subheader("Invoice database")
                     st.dataframe(df_view)
 
-                    timezone = pytz.timezone('Asia/Kuala_Lumpur')
+                    timezone = pytz.timezone("Asia/Kuala_Lumpur")
                     current_time = datetime.datetime.now(timezone)
-                    time_string = current_time.strftime('%Y-%m-%d %H:%M:%S')
-                    
-                    st.download_button(label="Download as CSV", data=df_view.to_csv().encode('utf-8'), 
-                                    file_name=f"invoice_database_{time_string}.csv", 
-                                    mime='text/csv')
+                    time_string = current_time.strftime("%Y-%m-%d %H:%M:%S")
+
+                    st.download_button(
+                        label="Download as CSV",
+                        data=df_view.to_csv().encode("utf-8"),
+                        file_name=f"invoice_database_{time_string}.csv",
+                        mime="text/csv",
+                    )
                 except Exception as viewdfError:
                     st.error(f"ViewDfError: {viewdfError}")
 
+
 def main_login():
-    if (compare_digest(bytes(st.session_state.get("password", ""), "UTF-8"),
-                       bytes(st.secrets["LOGIN_KEY"], "UTF-8"))):
+    if compare_digest(
+        bytes(st.session_state.get("password", ""), "UTF-8"),
+        bytes(st.secrets["LOGIN_KEY"], "UTF-8"),
+    ):
         return True
 
     _, col, _ = st.columns([4, 3, 4])
@@ -204,15 +241,21 @@ def main_login():
         status_login = st.empty()
         with placeholder.form("login"):
             st.markdown("#### Login")
-            password = st.text_input("Password", placeholder="Password", type="password")
+            password = st.text_input(
+                "Password", placeholder="Password", type="password"
+            )
             login_button = st.form_submit_button("Login")
 
             st.session_state["password"] = sha512(bytes(password, "UTF-8")).hexdigest()
             del password
 
             if login_button:
-                if not (compare_digest(bytes(st.session_state.get("password", ""), "UTF-8"),
-                                       bytes(st.secrets["LOGIN_KEY"], "UTF-8"))):
+                if not (
+                    compare_digest(
+                        bytes(st.session_state.get("password", ""), "UTF-8"),
+                        bytes(st.secrets["LOGIN_KEY"], "UTF-8"),
+                    )
+                ):
                     status_login.error("Password is incorrect.")
                     return False
                 else:

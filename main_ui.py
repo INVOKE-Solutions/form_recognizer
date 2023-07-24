@@ -156,6 +156,14 @@ def main_streamlit():
                             amount_df = table_df[
                                 table_df["Attribute"] == "Amount"
                             ].reset_index(drop=True)
+                            amount_df.replace(
+                                {"Conf": {"None": 0.0}}, 
+                                inplace=True
+                            )
+                            description_df.replace(
+                                {"Conf": {"None": 0.0}}, 
+                                inplace=True
+                            )
                             combined_conf = (
                                 amount_df["Conf"].astype(float)
                                 + description_df["Conf"].astype(float)

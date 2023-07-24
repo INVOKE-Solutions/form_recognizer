@@ -156,6 +156,14 @@ def main_streamlit():
                             amount_df = table_df[
                                 table_df["Attribute"] == "Amount"
                             ].reset_index(drop=True)
+                            amount_df.replace(
+                                {"Conf": {"None": 0.0}}, 
+                                inplace=True
+                            )
+                            description_df.replace(
+                                {"Conf": {"None": 0.0}}, 
+                                inplace=True
+                            )
                             combined_conf = (
                                 amount_df["Conf"].astype(float)
                                 + description_df["Conf"].astype(float)
@@ -250,12 +258,8 @@ def main_login():
             del password
 
             if login_button:
-                if not (
-                    compare_digest(
-                        bytes(st.session_state.get("password", ""), "UTF-8"),
-                        bytes(st.secrets["LOGIN_KEY"], "UTF-8"),
-                    )
-                ):
+                if not (compare_digest(bytes(st.session_state.get("password", ""), "UTF-8"),
+                                       bytes(st.secrets["LOGIN_KEY"], "UTF-8"))):
                     status_login.error("Password is incorrect.")
                     return False
                 else:
